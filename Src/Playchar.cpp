@@ -1,7 +1,4 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //		プレイキャラクターの処理
 //																Playchar.cpp
 //=============================================================================
@@ -11,6 +8,14 @@
 #include "Effect.h"
 #include "Map.h"
 
+// ===========================================================================
+// PC定数定義
+// ===========================================================================
+float const PcConstruct::SHOT_WAIT_SECOND = 0.2f;
+
+// ===========================================================================
+// PCプロシージャ
+// ===========================================================================
 //------------------------------------------------------------------------
 //
 //	ＰＣプロシージャのコンストラクタ	
@@ -27,6 +32,8 @@ CPcProc::CPcProc(CGameMain* pGMain) : CBaseProc(pGMain)
 }
 
 // ===========================================================================
+// PCオブジェクト
+// ===========================================================================
 //------------------------------------------------------------------------
 //
 //	ＰＣオブジェクトのコンストラクタ	
@@ -36,14 +43,14 @@ CPcProc::CPcProc(CGameMain* pGMain) : CBaseProc(pGMain)
 //------------------------------------------------------------------------
 CPcObj::CPcObj(CGameMain* pGMain) : CBaseObj(pGMain)
 {
-	m_pSprite = new CSprite(m_pGMain->m_pImageChar, 0, 0, PC_IMAGE_WIDTH, PC_IMAGE_HEIGHT);
-	m_vPos = VECTOR2(48, 721);
+	m_pSprite = new CSprite(m_pGMain->m_pImageChar, 0, 0, PcConstruct::IMAGE_WIDTH, PcConstruct::IMAGE_HEIGHT);
+	m_vPos = VECTOR2(0.0f, 0.0f);
 	ResetStatus();
 	ResetAnim();
 	m_bActive = TRUE;
 	m_nDirIdx = RIGHT;
-	m_nHp = m_nMaxHp = PC_MAXHP;
-	m_nAtc = PC_ATC;
+	m_nHp = m_nMaxHp = PcConstruct::MAX_HP;
+	m_nAtc = PcConstruct::ATC;
 
 }
 // ---------------------------------------------------------------------------
@@ -64,18 +71,20 @@ void	CPcObj::Update()
 {
 	CDirectInput* pDI = m_pGMain->m_pDI;
 	CMapLine*  pHitmapline = NULL;
-	float fSpeed     = PC_MOVESPEED;
-	float fJumpPlus  = PC_JUMPSPEED;
+	float fSpeed     = PcConstruct::SPEED_MOVE;
+	float fJumpPlus  = PcConstruct::SPEED_JUMP;
 	BOOL fMoveFlag = FALSE;
 
 	if (!m_bActive) return;
 
+	// 移動増分の初期化
 	m_vPosUp = VECTOR2(0, 0);
 
+	// 回転処理中、メッセージダイアログでなければ移動処理を行う
 	if (m_pGMain->m_moveFlag) {
 		switch (m_dwStatus)
 		{
-		case  FLASH:
+		case  FLASH:			// 無敵時間
 			m_nCnt1--;
 			if (m_nCnt1 <= 0) {
 				ResetStatus();
@@ -88,7 +97,7 @@ void	CPcObj::Update()
 
 			break;
 
-		case DAMAGE:
+		case DAMAGE:			// ダメージ処理
 			if (m_pOtherObj->GetAtc() > 0)
 			{
 				m_nHp -= m_pOtherObj->GetAtc();	// 攻撃を受けたダメージ
@@ -96,11 +105,11 @@ void	CPcObj::Update()
 				{
 					m_nHp = 0;
 					m_dwStatus = DEAD;		// HPが０なので死亡へ
-					m_nCnt1 = 180;			// 死亡フラッシュ中の時間設定
+					m_nCnt1 = PcConstruct::DEAD_SECOND * 60;			// 死亡フラッシュ中の時間設定
 				}
 				else {
 					m_dwStatus = FLASH;
-					m_nCnt1 = 60;
+					m_nCnt1 = PcConstruct::FLASH_SECOND * 60;
 				}
 			}
 			else {
@@ -130,7 +139,7 @@ void	CPcObj::Update()
 				m_vPosUp.x = -fSpeed;
 				m_nDirIdx = LEFT;
 			}
-			if (pDI->CheckKey(KD_DAT, DIK_SPACE) || pDI->CheckJoy(KD_DAT, DIJ_UP)) //	↑キー
+			if (pDI->CheckKey(KD_DAT, DIK_SPACE) || pDI->CheckJoy(KD_DAT, DIJ_UP)) //	SPACEキー
 			{	// ジャンプ開始
 				fMoveFlag = TRUE;
 				m_dwStatusSub = JUMP;
@@ -138,23 +147,13 @@ void	CPcObj::Update()
 				m_vJumpSpeed.y = -(fSpeed*2.5 + fJumpPlus);
 				m_fJumpTime = 0;
 				m_vPosUp.y = m_vJumpSpeed.y;
-				//m_nDirIdx      = UP;
 			}
 			else {// 自然落下
-				if (pDI->CheckKey(KD_DAT, DIK_DOWN) || pDI->CheckJoy(KD_DAT, DIJ_DOWN))//↓キー
-				{
-					//fMoveFlag = TRUE;
-					m_vPosUp.y = fSpeed;
-					//m_nDirIdx = DOWN;
-				}
-				else {
-					//fMoveFlag = TRUE;
-					m_dwStatusSub = JUMP;
-					m_vJumpSpeed.x = m_vPosUp.x;
-					m_vJumpSpeed.y = fSpeed / 2;
-					m_fJumpTime = 0;
-					m_vPosUp.y = m_vJumpSpeed.y;
-				}
+				m_dwStatusSub = JUMP;
+				m_vJumpSpeed.x = m_vPosUp.x;
+				m_vJumpSpeed.y = fSpeed / 2;
+				m_fJumpTime = 0;
+				m_vPosUp.y = m_vJumpSpeed.y;
 			}
 			break;
 
@@ -176,13 +175,13 @@ void	CPcObj::Update()
 			break;
 		}
 
-		if (pDI->CheckKey(KD_DAT, DIK_X) || pDI->CheckJoy(KD_DAT, DIJ_A))
+		if (pDI->CheckKey(KD_DAT, DIK_X) || pDI->CheckJoy(KD_DAT, DIJ_A))			// 攻撃
 		{
 			if (m_nShotWait <= 0)
 			{
 				// ショットの発射
 				m_pGMain->m_pWeaponProc->m_pWeaponShotProc->Start(m_vPos + VECTOR2(16, 16), this, PC);
-				m_nShotWait = 10;    // 武器発射のウェイトを掛ける
+				m_nShotWait = PcConstruct::SHOT_WAIT_SECOND * 60;    // 武器発射のウェイトを掛ける
 			}
 		}
 
@@ -201,6 +200,7 @@ void	CPcObj::Update()
 		// 増分計算
 		m_vPos += m_vPosUp;
 
+		// 移動していればアニメーション再生
 		if (fMoveFlag) {
 			AnimCountup();
 		}

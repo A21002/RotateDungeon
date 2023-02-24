@@ -841,15 +841,15 @@ void  CMapProc::DrawBack()
 				if (m_pGMain->m_Rotate > m_RotateAnim) {	// 回転が終了してない場合
 					m_RotateAnim++;
 					m_pGMain->m_moveFlag = FALSE;
-					m_pGMain->m_pEnmProc->RotateCenter(1);
-					m_pGMain->m_pWeaponProc->RotateCenter(1);
+					m_pGMain->m_pEnmProc->RotateCenter(UP);
+					m_pGMain->m_pWeaponProc->RotateCenter(UP);
 					m_pGMain->m_pEffectProc->m_pItemProc->RotateCenter(1);
 				}
 				else if (m_pGMain->m_Rotate < m_RotateAnim) {	// 回転が終了してない場合
 					m_RotateAnim--;
 					m_pGMain->m_moveFlag = FALSE;
-					m_pGMain->m_pEnmProc->RotateCenter(2);
-					m_pGMain->m_pWeaponProc->RotateCenter(2);
+					m_pGMain->m_pEnmProc->RotateCenter(DOWN);
+					m_pGMain->m_pWeaponProc->RotateCenter(DOWN);
 					m_pGMain->m_pEffectProc->m_pItemProc->RotateCenter(2);
 				}
 				else {
@@ -925,6 +925,7 @@ void  CMapProc::DrawMapLine()
 	}
 }
 
+// CheckPoint
 // 引数：マップチップの回転(通常270)
 void CMapProc::Rotate90(DWORD rotate) {
 	int i;

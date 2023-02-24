@@ -1,7 +1,4 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //		プレイキャラクターの処理
 //																Playchar.h
 //=============================================================================
@@ -13,7 +10,6 @@
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4018)
 
-
 //ヘッダーファイルのインクルード
 #include <stdio.h>
 #include <windows.h>
@@ -24,16 +20,9 @@
 #include "Dinput.h"
 #include "Sprite.h"
 
-#define PC_IMAGE_WIDTH 48
-#define PC_IMAGE_HEIGHT 57
-
-#define PC_MAXHP 1000
-#define PC_ATC   10
-#define PC_MOVESPEED 5
-#define PC_JUMPSPEED 9
-
 //======================================================================
 // プレイキャラクター　オブジェクトクラス
+//======================================================================
 class CPcObj : public CBaseObj
 {
 protected:
@@ -47,8 +36,10 @@ public:
 	~CPcObj();
 
 };
+
 //======================================================================
 // プレイキャラクター　プロシージャクラス
+//======================================================================
 class CPcProc : public CBaseProc
 {
 protected:
@@ -58,9 +49,27 @@ public:
 	// アクセス関数
 	CPcObj*			    GetPcObjPtr() { return (CPcObj*)GetObjArrayPtr()[0]; }
 	int				    GetPcNum() { return m_nPcNum; }
-	void				AddPcNum(int Num) { m_nPcNum += Num; }
 
 	CPcProc(CGameMain* pGMain);	// コンストラクタ
 	~CPcProc() { ; }
 
+};
+
+//======================================================================
+// プレイヤー定数クラス
+//======================================================================
+class PcConstruct
+{
+public:
+	static const int IMAGE_WIDTH = 48;
+	static const int IMAGE_HEIGHT = 57;
+
+	static const int MAX_HP = 1000;
+	static const int ATC = 10;
+	static const int SPEED_MOVE = 5;
+	static const int SPEED_JUMP = 9;
+
+	static const int FLASH_SECOND = 1;
+	static const int DEAD_SECOND = 3;
+	static const float SHOT_WAIT_SECOND;
 };

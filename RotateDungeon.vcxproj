@@ -158,6 +158,9 @@
     <ClInclude Include="Src\Direct3D.h" />
     <ClInclude Include="Src\Effect.h" />
     <ClInclude Include="Src\Enemy.h" />
+    <ClInclude Include="Src\EnemyBat.h" />
+    <ClInclude Include="Src\EnemyMole.h" />
+    <ClInclude Include="Src\EnemySlime.h" />
     <ClInclude Include="Src\GameMain.h" />
     <ClInclude Include="Src\Main.h" />
     <ClInclude Include="Src\Map.h" />
@@ -204,6 +207,9 @@
     <ClCompile Include="Src\Direct3D.cpp" />
     <ClCompile Include="Src\Effect.cpp" />
     <ClCompile Include="Src\Enemy.cpp" />
+    <ClCompile Include="Src\EnemyBat.cpp" />
+    <ClCompile Include="Src\EnemyMole.cpp" />
+    <ClCompile Include="Src\EnemySlime.cpp" />
     <ClCompile Include="Src\GameMain.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Map.cpp" />

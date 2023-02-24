@@ -77,6 +77,15 @@
     <ClInclude Include="Src\Sprite.h">
       <Filter>ソース ファイル\02_ゲームライブラリ</Filter>
     </ClInclude>
+    <ClInclude Include="Src\EnemySlime.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\EnemyBat.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\EnemyMole.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Sprite2D_PS.hlsl">
@@ -149,6 +158,15 @@
     </ClCompile>
     <ClCompile Include="Src\Sprite.cpp">
       <Filter>ソース ファイル\02_ゲームライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EnemySlime.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EnemyBat.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EnemyMole.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
