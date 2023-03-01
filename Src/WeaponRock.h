@@ -1,14 +1,14 @@
 //=============================================================================
-//		コウモリの処理
-//																Enamy.h
+//      武器の処理
+//																WeaponRock.h
 //=============================================================================
-
 #pragma once
 
 //警告非表示
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4018)
+
 
 //ヘッダーファイルのインクルード
 #include <stdio.h>
@@ -20,64 +20,46 @@
 #include "Dinput.h"
 #include "Sprite.h"
 
-#define  ENM_BAT_MAX  20
-
-#define  ENM_BAT_WIDTH 60
-#define  ENM_BAT_HEIGHT 51
-#define  ENM_BAT_HP 300
-#define  ENM_BAT_ATK 200
+#define  WEAPON_ROCK_MAX  100
+#define  WEAPON_ROCK_ATK_PC 300
+#define  WEAPON_ROCK_ATK_ENM 1000
 
 //======================================================================
-// コウモリの敵　オブジェクトクラス
+// 岩　オブジェクトクラス
 //======================================================================
-class CEnmBatObj : public CBaseObj
+class CWeaponRockObj : public CBaseObj
 {
 protected:
-	CEnmBatObj* m_pHpBarObj;
+	DWORD  m_dwOwner;
+	DWORD  m_hp;
+	VECTOR2 m_top;
 
 public:
-	BOOL Start(VECTOR2 vPos) override;
+	BOOL Start(VECTOR2, CBaseObj* pObj, DWORD dwOwner) override;
 	void Update() override;
-	void RotatePos(DWORD) override;
-	void CreateChildObj();
 
-	FLOAT moveNum;
+	void RotatePos(DWORD) override;
+	void RotateDrawUp() override;
+	void RotateDrawDown() override;
 
 	// コンストラクタ
-	CEnmBatObj(CGameMain* pGMain);
-	~CEnmBatObj();
+	CWeaponRockObj(CGameMain* pGMain);
+	~CWeaponRockObj();
 
 };
 
 //======================================================================
-// コウモリの敵　プロシージャクラス
+// 岩　プロシージャクラス
 //======================================================================
-class CEnmBatProc : public CBaseProc
+class CWeaponRockProc : public CBaseProc
 {
-protected:
-	;
-
 public:
-	void   Update() override;
+	BOOL Start(VECTOR2, CBaseObj* pObj, DWORD dwOwner);
+
 	void   Rotate(DWORD) override;
 	void   RotateCenter(DWORD) override;
 
-	// コンストラクタ
-	CEnmBatProc(CGameMain* pGMain);
-	~CEnmBatProc() { ; }
+	CWeaponRockProc(CGameMain* pGMain);	// コンストラクタ
+	~CWeaponRockProc() { ; }
 
-};
-
-class BatConstruct
-{
-public:
-	static const int HP = 300;
-	static const int ATK = 200;
-	static const int SPEED = 1;
-
-	static const int IMAGE_WIDTH = 60;
-	static const int IMAGE_HEIGHT = 51;
-
-	static const int FLASHTIME_DEAD = 3;
-	static const int FLASHTIME_DAMAGE = 1;
 };

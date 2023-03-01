@@ -22,11 +22,6 @@
 
 #define  ENM_MOLE_MAX 1
 
-#define  ENM_MOLE_WIDTH 318
-#define  ENM_MOLE_HEIGHT 168
-#define  ENM_MOLE_HP 3000
-#define  ENM_MOLE_ATK 200
-
 //======================================================================
 // モグラの敵　プロシージャクラス
 //======================================================================
@@ -57,7 +52,6 @@ public:
 	void Update() override;
 
 	DWORD m_AnimCount;
-	DWORD m_waitTime;
 	DWORD m_SHotPosX[15];
 	DWORD m_RotateItemPos;
 	DWORD m_ShotNum;
@@ -66,4 +60,34 @@ public:
 	CEnmMoleObj(CGameMain* pGMain);
 	~CEnmMoleObj();
 
+};
+
+class MoleConstruct
+{
+public:
+	static const int HP = 3000;
+	static const int ATK = 200;
+	static const int JUMP_SPEED = 4;
+	static const int SHOT_SPEED = 3;
+
+	static const int IMAGE_WIDTH = 318;
+	static const int IMAGE_HEIGHT = 168;
+
+	static const int ANIM_NUM_SMOKE = 3;
+	static const int ANIM_NUM_APPEAR = 7;
+	static const int ANIM_NUM_IDLE = 2;
+	static const int ANIM_NUM_DIVE = 7;
+	static const int ANIM_NUM_SHOT = 3;
+	static const int ANIM_NUM_JUMP = 10;
+
+	static const int SHOT_NUM_MIN = 10;
+	static const int SHOT_NUM_MAX = 15;
+
+	static const int AREA_X_MIN = 128;
+	static const int AREA_X_MAX = 919;
+	static const int AREA_Y_MIN = 96;
+	static const int AREA_Y_MAX = 503;
+
+	static const int JUMP_COUNT = 45;
+	static const int SMOKE_COUNT = 60;
 };

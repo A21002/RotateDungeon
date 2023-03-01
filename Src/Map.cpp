@@ -1,7 +1,4 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //		マップの処理
 //																Map.cpp
 //=============================================================================
@@ -12,8 +9,12 @@
 #include "Weapon.h"
 
 
-// CMapクラス   --------------------------------------------------------------------------------------------
+//=============================================================================
+// Mapクラス  
+//=============================================================================
+//-----------------------------------------------------------------------------
 // コンストラクタ
+//-----------------------------------------------------------------------------
 CMap::CMap(CGameMain* pGMain, CSpriteImage* pMapImage, int imapX, int imapY, int imapchipWidth, int imapchipHeight)
 {
 	m_pGMain = pGMain;
@@ -29,7 +30,10 @@ CMap::CMap(CGameMain* pGMain, CSpriteImage* pMapImage, int imapX, int imapY, int
 	m_MapLn     = NULL;
 	m_EvtMap    = NULL;
 }
+
+//-----------------------------------------------------------------------------
 //  デストラクタ
+//-----------------------------------------------------------------------------
 CMap::~CMap()
 {
 	SAFE_DELETE_ARRAY(m_MapBakTbl);
@@ -38,8 +42,12 @@ CMap::~CMap()
 	SAFE_DELETE_ARRAY(m_EvtMap);
 }
 
-//  CMapProcクラス  ---------------------------------------------------------------------------------------
+//=============================================================================
+//  MapProcクラス
+//=============================================================================
+//-----------------------------------------------------------------------------
 //  コンストラクタ
+//-----------------------------------------------------------------------------
 CMapProc::CMapProc(CGameMain*	pGMain)
 {
 	m_pGMain = pGMain;
@@ -50,20 +58,21 @@ CMapProc::CMapProc(CGameMain*	pGMain)
 	{
 		m_pMapArray[i] = NULL;
 	}
-	//m_pMapImage1  = new CSpriteImage(m_pGMain->m_pShader, _T("Data/image/mapchip3.png"));
 	m_pMapImage1  = new CSpriteImage(m_pGMain->m_pShader, _T("Data/image/Map1.png"));
 	m_pMapImage2 = new CSpriteImage(m_pGMain->m_pShader, _T("Data/image/Map2.png"));
 	m_pBakImage   = new CSpriteImage(m_pGMain->m_pShader, _T("Data/image/aozora.png"));
-	//m_pBakImage = new CSpriteImage(m_pGMain->m_pShader, _T("Data/image/hoshizora2.png"));
 	m_pSpriteMap  = new CSprite(m_pGMain->m_pShader); // スプライトオブジェクトの生成
 	m_pSpriteBak  = new CSprite(m_pBakImage);
 	m_pSpriteLine = new CSprite(m_pGMain->m_pShader);
 	m_RotateAnim = 0;
+	m_fRotate = 0.0f;
 
 	InitMap();
 }
 
+//-----------------------------------------------------------------------------
 //  デストラクタ
+//-----------------------------------------------------------------------------
 CMapProc::~CMapProc()
 {
 	for (DWORD i = 0; i < MAP_MAX; i++)
@@ -77,8 +86,8 @@ CMapProc::~CMapProc()
 	SAFE_DELETE(m_pMapImage1);
 	SAFE_DELETE(m_pMapImage2);
 }
+
 // ----------------------------------------------------------------------
-//
 // マップ配列からマップオブジェクトの作成
 //
 //   mapBakTbl 背景マップ配列
@@ -92,16 +101,12 @@ CMapProc::~CMapProc()
 //   mapLine   マップ線配列配列
 //
 //   EvtMap    ベントマップ
-//
 // ----------------------------------------------------------------------
 void CMapProc::InitMap()
 {
 	// -----------------------------------------------------------------------------------------------
-	//
-	// ステージ	1　泉のステージ
-	//
+	// 探索ステージ	
 	// -----------------------------------------------------------------------------------------------
-
 	// 背景マップ　-----------------------------------------------------------
 	int  mapBakTbl0[] = {
 		0
@@ -129,49 +134,6 @@ void CMapProc::InitMap()
 	//----------------------------------------------------------------------------
 	VECTOR2  mapLine0[] = {
 		// 地面の設定
-		/*
-		VECTOR2(0, 0),			// 左壁
-		VECTOR2(-48, 385 + 192),			// 左壁下
-		VECTOR2(240, 385 + 192),			// 窪み１　左上
-		VECTOR2(336, 433 + 192),			// 窪み１　左下
-		VECTOR2(432, 433 + 192),			// 窪み１　右下
-		VECTOR2(528, 385 + 192),			// 窪み１　右上
-
-		VECTOR2(720, 385 + 192),			// 崖１　左上
-		VECTOR2(720, 481 + 192),			// 崖１　左下
-		VECTOR2(816, 481 + 192),			// 崖１　右下
-		VECTOR2(816, 385 + 192),			// 崖１　右上
-
-
-		VECTOR2(960, 385 + 192),			// 窪み２　左上
-		VECTOR2(1104, 529 + 192),		// 窪み２　左下
-		VECTOR2(1200, 529 + 192),		// 窪み２　右下
-		VECTOR2(1344, 385 + 192),		// 窪み２　右上
-
-		VECTOR2(1584, 385 + 192),		// 崖２　左上
-		VECTOR2(1584, 529 + 192),		// 崖２　左下
-		VECTOR2(1728, 529 + 192),		// 崖２　右下
-		VECTOR2(1728, 385 + 192),		// 崖２　右上
-
-		VECTOR2(1968, 385 + 192),		// 崖３　左上
-		VECTOR2(1968, 529 + 192),		// 崖３　左下
-		VECTOR2(2112, 529 + 192),		// 崖３　右下
-		VECTOR2(2112, 385 + 192),		// 崖３　右上
-
-		VECTOR2(2208, 385 + 192),		// 崖４　左上
-		VECTOR2(2208, 529 + 192),		// 崖４　左下
-		VECTOR2(2352, 529 + 192),		// 崖４　右下
-		VECTOR2(2352, 385 + 192),		// 崖４　右上
-
-		VECTOR2(2448, 385 + 192),		// 窪み３　左上
-		VECTOR2(2544, 481 + 192),		// 窪み３　左下
-		VECTOR2(2688, 481 + 192),		// 窪み３　右下
-		VECTOR2(2784, 385 + 192),		// 窪み３　右上
-
-		VECTOR2(2880, 385 + 192),		// 右壁下
-		VECTOR2(2820, 0),			// 右壁上
-		VECTOR2(0, 0),			// 天井
-		*/
 		// ①
 		VECTOR2(160, 2112),
 		VECTOR2(160, 2432),
@@ -203,7 +165,6 @@ void CMapProc::InitMap()
 
 		VECTOR2(999999, 999999),	// 地面の終了
 
-
 		// ②
 		VECTOR2(1888, 160),
 		VECTOR2(1888, 480),
@@ -226,7 +187,6 @@ void CMapProc::InitMap()
 		VECTOR2(3040, 608),
 		VECTOR2(3040, 160),
 		VECTOR2(1888, 160),
-
 		VECTOR2(999999, 999999),	// 地面の終了
 
 		// ③
@@ -243,7 +203,6 @@ void CMapProc::InitMap()
 		VECTOR2(864, 1504),
 
 		// ここから変更の可能性大
-
 		VECTOR2(1120, 1504),
 		VECTOR2(1120, 320),
 		VECTOR2(1152, 320),
@@ -433,46 +392,23 @@ void CMapProc::InitMap()
 	//
 	//----------------------------------------------------------------------------
 	CEvtMap  EvtMap0[] = {
-		/*
-		{ VECTOR2(1584, 484 + 192),      3, 0x01, 0 },		// 泉の水
-		{ VECTOR2(1584 + 48, 484 + 192), 3, 0x01, 0 },
-		{ VECTOR2(1584 + 96, 484 + 192), 3, 0x01, 0 },
+		{ VECTOR2(288,   2944), 1, 0x00, 0 },				// スタート位置
 
-		{ VECTOR2(1968, 484 + 192),      3, 0x01, 0 },		// 泉の水
-		{ VECTOR2(1968 + 48, 484 + 192), 3, 0x01, 0 },
-		{ VECTOR2(1968 + 96, 484 + 192), 3, 0x01, 0 },
+		{VECTOR2(320, 2250),         2, 0x08, 0},			// 回転アイテム
 
-		{ VECTOR2(2208, 484 + 192),      3, 0x01, 0 },		// 泉の水
-		{ VECTOR2(2208 + 48, 484 + 192), 3, 0x01, 0 },
-		{ VECTOR2(2208 + 96, 484 + 192), 3, 0x01, 0 },
+		{VECTOR2(3020, 2944),        2, 0x01, 0},			// マップ移動
 
-		{ VECTOR2(600, 337 + 192),  3, 0x02, 0 },			// がまの敵
-		{ VECTOR2(856, 337 + 192),  3, 0x02, 0 },
-		{ VECTOR2(1448, 337 + 192), 3, 0x02, 0 },
-		{ VECTOR2(2400, 337 + 192), 3, 0x02, 0 },
-		{ VECTOR2(2600, 433 + 192), 3, 0x02, 0 },
+		{VECTOR2(1984, 300),         2, 0x04, 0},			// 270度
 
-		{ VECTOR2(1824, 288 + 192), 2, 0x10, 0 },			// 救急箱
-		{ VECTOR2(2832, 336 + 192), 2, 0x20, 0 },			// 扉
-		*/
-		{ VECTOR2(288,   2944), 1, 0x00, 0 },			// スタート位置
+		{VECTOR2(240, 1850),         2, 0x08, 0},			// 180度
 
-		{VECTOR2(320, 2250),         2, 0x10, 0},			// 回転アイテム
+		{VECTOR2(1856, 1856),        2, 0x08, 0},			// 180度
 
-		{VECTOR2(3020, 2944),        2, 0x20, 0},			// マップ移動
-
-		{VECTOR2(1984, 300),         2, 0x400, 0},
-
-		{VECTOR2(240, 1850),         2, 0x10, 0},
-
-		{VECTOR2(1856, 1856),        2, 0x10, 0},
-
-		{VECTOR2(1184, 512),         2, 0x800, 0},
+		{VECTOR2(1184, 512),         2, 0x02, 0},			// カギ
 
 		{VECTOR2(700, 2300),         3, 0x02, 0},			// スライムのスポーン位置
 		{VECTOR2(2300, 800),         3, 0x02, 0},
 		{VECTOR2(2000, 400),         3, 0x02, 0},
-		//{VECTOR2(1375, 2990),        3, 0x02, 0},
 		{VECTOR2(475, 407),          3, 0x02, 0},
 		{VECTOR2(250, 400),          3, 0x02, 0},
 		{VECTOR2(620, 620),          3, 0x02, 0},
@@ -488,26 +424,20 @@ void CMapProc::InitMap()
 		{VECTOR2(1048, 1000),        3, 0x02, 0},
 
 		{VECTOR2(2735, 560),         3, 0x04, 0},			// コウモリのスポーン位置
-		//{VECTOR2(1935, 918),         3, 0x04, 0},
 		{VECTOR2(730, 400),          3, 0x04, 0},
 		{VECTOR2(816, 1243),         3, 0x04, 0},
 		{VECTOR2(390, 1400),         3, 0x04, 0},
 		{VECTOR2(2893, 2122),        3, 0x04, 0},
-		//{VECTOR2(2446, 2160),        3, 0x04, 0},
 		
-		// 看板
-		{VECTOR2(570, 2745),         2, 0x1000, 0},
-		{VECTOR2(1200, 2135),        2, 0x2000, 0},
-		{VECTOR2(1140, 2745),        2, 0x4000, 0},
+		// 看板(チュートリアル)
+		{VECTOR2(570, 2745),         2, 0x20, 0},
+		{VECTOR2(1200, 2135),        2, 0x40, 0},
+		{VECTOR2(1140, 2745),        2, 0x80, 0},
 	};
 	
 	CEvtMap EvtMap1[] = {
-
-		{VECTOR2(860, 600), 3, 0x08, 0},		// 回転(180)
-
 		{ VECTOR2(242,   98), 1, 0x00, 0 },			// スタート位置
 	};
-
 
 	// -------------------------------------------------------------------------------------------------
 	//
@@ -515,30 +445,25 @@ void CMapProc::InitMap()
 	//
 	// -------------------------------------------------------------------------------------------------
 
-
-	// ステージ1
+	// 探索ステージ
 	m_nMapNo = 0;
 	MakeMap(m_pMapImage1, 1, 1, 3200, 3200,
 		mapBakTbl0, sizeof(mapBakTbl0) / sizeof(int), mapForTbl0, sizeof(mapForTbl0) / sizeof(int), 
 		mapLine0, (int)(sizeof(mapLine0) / sizeof(VECTOR2)), EvtMap0, sizeof(EvtMap0) / sizeof(CEvtMap));
 	m_nMapSize[m_nMapNo] = VECTOR2(3200, 3200);
-	m_RotateMap[m_nMapNo] = 0;
 
-	// ステージ2
+	// ボスステージ
 	m_nMapNo = 1;
 	MakeMap(m_pMapImage2, 1, 1, 1366, 768,
 		mapBakTbl1, sizeof(mapBakTbl1) / sizeof(int), mapForTbl1, sizeof(mapForTbl1) / sizeof(int),
 		mapLine1, (int)(sizeof(mapLine1) / sizeof(VECTOR2)), EvtMap1, sizeof(EvtMap1) / sizeof(CEvtMap));
 	m_nMapSize[m_nMapNo] = VECTOR2(1366, 768);
-	m_RotateMap[m_nMapNo] = 0;
 
 	// 開始マップの設定
-	SetMap(0, VECTOR2(0, 0));
-
+	SetMap(0);
 }
 
 // ----------------------------------------------------------------------
-//
 // マップの作成
 //
 //  CSpriteImage* pMapImage  マップのスプライトイメージ
@@ -554,13 +479,11 @@ void CMapProc::InitMap()
 //  int mapLineLen           マップ線配列の要素数
 //  CEvtMap EvtMap[]         イベントマップ配列
 //  int EvtMapLen            イベントマップ配列の要素数
-//
 // ----------------------------------------------------------------------
 void  CMapProc::MakeMap(CSpriteImage* pMapImage, int imapX, int imapY, int imapchipWidth, int imapchipHeight,
 	                    int  mapBakTbl[], int mapBakLen, int  mapForTbl[], int mapForLen, 
 	                    VECTOR2 mapLine[], int mapLineLen, CEvtMap EvtMap[], int EvtMapLen )
 {
-
 	int i, j;
 	VECTOR2 vSave;
 
@@ -634,10 +557,9 @@ void  CMapProc::MakeMap(CSpriteImage* pMapImage, int imapX, int imapY, int imapc
 		m_pMapArray[m_nMapNo]->m_EvtMap[i] = EvtMap[i];
 	}
 }
+
 // ----------------------------------------------------------------------
-//
 // マップ移動の処理　　扉に接触したとき呼ばれる
-//
 // ----------------------------------------------------------------------
 void CMapProc::MoveMap()
 {
@@ -647,35 +569,19 @@ void CMapProc::MoveMap()
 	vPos.x = m_pGMain->m_pPcProc->GetPcObjPtr()->GetPos().x;
 	vPos.y = m_nMapSize[m_nMapNo].y - m_pGMain->m_pPcProc->GetPcObjPtr()->GetPos().y;
 
-		SetMap(++m_nMapNo, vPos);	// 次のマップは１
-		m_pGMain->m_pEnmProc->SetNonActive();	// 敵を全て消す。敵の発生フラグをリセットする
-		m_pGMain->m_pEffectProc->SetNonActive();	// アイテムを全て消す。アイテムの発生フラグをリセットする
-	
-	
-}
-
-void CMapProc::BackMap()
-{
-	// 次のマップの開始位置
-	VECTOR2 vPos = VECTOR2(0, 0);
-	vPos.x = m_nMapSize[m_nMapNo - 1].x - m_pGMain->m_pPcProc->GetPcObjPtr()->GetPos().x - 80;
-	vPos.y = m_pGMain->m_pPcProc->GetPcObjPtr()->GetPos().y;
-
-	SetMap(--m_nMapNo, vPos);	// 次のマップは１
+	SetMap(++m_nMapNo);	// 次のマップは１
 	m_pGMain->m_pEnmProc->SetNonActive();	// 敵を全て消す。敵の発生フラグをリセットする
 	m_pGMain->m_pEffectProc->SetNonActive();	// アイテムを全て消す。アイテムの発生フラグをリセットする
-	
-
 }
+
 // ----------------------------------------------------------------------
-//
 // 開始マップの設定
 //
 // 引数　：　int no　マップ番号
-//
 // ----------------------------------------------------------------------
-void CMapProc::SetMap(int no, VECTOR2 vPos)
+void CMapProc::SetMap(int no)
 {
+	VECTOR2 vPos;
 	// 開始マップＮＯ
 	m_nMapNo = no;
 
@@ -707,11 +613,8 @@ void CMapProc::SetMap(int no, VECTOR2 vPos)
 	m_pGMain->m_pPcProc->GetPcObjPtr()->SetHp(m_pGMain->m_pPcProc->GetPcObjPtr()->GetMaxHp());
 }
 
-
 // ----------------------------------------------------------------------
-//
 // マップの更新
-//
 // ----------------------------------------------------------------------
 void  CMapProc::Update()
 {
@@ -745,9 +648,7 @@ void  CMapProc::Update()
 }
 
 // ----------------------------------------------------------------------
-//
 // マップの更新２
-//
 // ----------------------------------------------------------------------
 void  CMapProc::Update2()
 {
@@ -756,7 +657,6 @@ void  CMapProc::Update2()
 }
 
 // ----------------------------------------------------------------------
-//
 // イベントマップの探索処理
 //
 // 引数
@@ -768,7 +668,6 @@ void  CMapProc::Update2()
 //
 // 戻り値
 //　　TRUE:見つかった  FALSE:見つからない
-//
 // ----------------------------------------------------------------------
 BOOL  CMapProc::SearchEvt(int nStart, int nEvtID, DWORD dwEvtNo, VECTOR2& vPos, int& nNext)
 {
@@ -800,9 +699,7 @@ BOOL  CMapProc::SearchEvt(int nStart, int nEvtID, DWORD dwEvtNo, VECTOR2& vPos, 
 }
 
 // ----------------------------------------------------------------------
-//
 // マップの背景の描画
-//
 // ----------------------------------------------------------------------
 void  CMapProc::DrawBack()
 {
@@ -833,32 +730,32 @@ void  CMapProc::DrawBack()
 				m_pSpriteMap->m_ofX = no % 1000 * m_pMapArray[m_nMapNo]->m_nMapchipWidth;
 				m_pSpriteMap->m_ofY = no / 1000 * m_pMapArray[m_nMapNo]->m_nMapchipHeight;
 
+				// 回転処理
 				int cx, cy;
-
+				// マップ全体の中心地点
 				cx = m_pSpriteMap->GetDestWidth() / 2;
 				cy = m_pSpriteMap->GetDestHeight() / 2;
 
 				if (m_pGMain->m_Rotate > m_RotateAnim) {	// 回転が終了してない場合
-					m_RotateAnim++;
-					m_pGMain->m_moveFlag = FALSE;
+					m_RotateAnim++;												// 今回の回転で、実際に回転した値
+					m_fRotate++;												// 現在のマップの回転角
+					m_pGMain->m_moveFlag = FALSE;								// 回転処理中、すべてのオブジェクトの移動を制限
+					// 敵、武器、アイテムが背景の回転に合わせて、回転する
 					m_pGMain->m_pEnmProc->RotateCenter(UP);
 					m_pGMain->m_pWeaponProc->RotateCenter(UP);
-					m_pGMain->m_pEffectProc->m_pItemProc->RotateCenter(1);
-				}
-				else if (m_pGMain->m_Rotate < m_RotateAnim) {	// 回転が終了してない場合
-					m_RotateAnim--;
-					m_pGMain->m_moveFlag = FALSE;
-					m_pGMain->m_pEnmProc->RotateCenter(DOWN);
-					m_pGMain->m_pWeaponProc->RotateCenter(DOWN);
-					m_pGMain->m_pEffectProc->m_pItemProc->RotateCenter(2);
+					m_pGMain->m_pEffectProc->m_pItemProc->RotateCenter(UP);
 				}
 				else {
 					if (m_OneSet) {						// 回転がすべて終了(1回転につき1回実行)
 						m_pGMain->m_moveFlag = TRUE;
 						m_OneSet = FALSE;
-						m_pGMain->m_pEnmProc->Rotate(Rota);
-						m_pGMain->m_pWeaponProc->Rotate(Rota);
-						m_pGMain->m_pEffectProc->m_pItemProc->Rotate(Rota);
+						// 回転後の座標を設定
+						m_pGMain->m_pEnmProc->Rotate(m_pGMain->m_Rotate);
+						m_pGMain->m_pWeaponProc->Rotate(m_pGMain->m_Rotate);
+						m_pGMain->m_pEffectProc->m_pItemProc->Rotate(m_pGMain->m_Rotate);
+						// 最終的な回転増分と実際に回転した値をリセット
+						m_RotateAnim = 0;
+						m_pGMain->m_Rotate = 0;
 					}
 				}
 
@@ -867,21 +764,19 @@ void  CMapProc::DrawBack()
 				mWorld = XMMatrixTranslation((x*m_pMapArray[m_nMapNo]->m_nMapchipWidth - m_pGMain->m_vScroll.x), (y*m_pMapArray[m_nMapNo]->m_nMapchipHeight - m_pGMain->m_vScroll.y), 0);
 				mScale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
 				mCenter = XMMatrixTranslation(cx, cy, 0);
-				mRot = XMMatrixRotationZ(XMConvertToRadians(m_RotateAnim));
+				mRot = XMMatrixRotationZ(XMConvertToRadians(m_fRotate));
 				mWorld = mRot * mCenter * mScale * mWorld;
 				mCenter = XMMatrixTranslation(-cx, -cy, 0);
 				mWorld = mCenter * mWorld;
 
 				m_pSpriteMap->Draw(mWorld);
-				//m_pSpriteMap->Draw(x*m_pMapArray[m_nMapNo]->m_nMapchipWidth - m_pGMain->m_vScroll.x, y*m_pMapArray[m_nMapNo]->m_nMapchipHeight - m_pGMain->m_vScroll.y);
 			}
 		}
 	}
 }
+
 // ----------------------------------------------------------------------
-//
 // マップの前景の描画
-//
 // ----------------------------------------------------------------------
 void  CMapProc::DrawFore()
 {
@@ -905,9 +800,7 @@ void  CMapProc::DrawFore()
 }
 
 // ----------------------------------------------------------------------
-//
 // マップ線の描画
-//
 // ----------------------------------------------------------------------
 void  CMapProc::DrawMapLine()
 {
@@ -926,13 +819,82 @@ void  CMapProc::DrawMapLine()
 }
 
 // CheckPoint
-// 引数：マップチップの回転(通常270)
-void CMapProc::Rotate90(DWORD rotate) {
+// ----------------------------------------------------------------------
+// マップ線を90度回転させて、背景の回転を開始させる
+// ----------------------------------------------------------------------
+void CMapProc::Rotate90() {
+	int i;
+	int y;
+
+	// 全てのマップ線を90度回転
+	for (i = 0; i < m_pMapArray[m_nMapNo]->m_nMapLnLength; i++) {
+		// 線分の始点と終点の位置を回転させる
+		y = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y = y;
+		y = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y = y;
+
+		// 法線方向を回転
+		if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x > 0) {		// 右方向を下方向へ
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x--;
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y++;
+		}
+		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x < 0) {	// 左方向を上方向へ
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x++;
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y--;
+		}
+		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y > 0) {	// 下方向を左方向へ
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x--;
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y--;
+		}
+		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y < 0) {	// 上方向を右方向へ
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x++;
+			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y++;
+		}
+	}
+
+	m_OneSet = TRUE;			// 回転終了後に行う処理のフラグを入れる
+	m_pGMain->m_Rotate = 90;	// 目標回転増分をセットする
+	
+	//Rota = 90;
+	//m_pGMain->m_pEnmProc->Rotate(90);
+}
+
+// ----------------------------------------------------------------------
+// マップ線を180度回転させて、背景の回転を開始させる
+// ----------------------------------------------------------------------
+void CMapProc::Rotate180() {
+	int i;
+
+	// 全てのマップ線を180度回転
+	for (i = 0; i < m_pMapArray[m_nMapNo]->m_nMapLnLength; i++) {
+		// 線分の始点と終点の位置を回転させる
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x  = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y = m_nMapSize[m_nMapNo].y - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x;
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y = m_nMapSize[m_nMapNo].y - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y;
+		// 法線方向を回転
+		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal *= -1;
+	}
+	m_OneSet = TRUE;			// 回転終了後に行う処理のフラグを入れる
+	m_pGMain->m_Rotate = 180;	// 目標回転増分をセットする
+
+	//Rota = 180;
+	//m_pGMain->m_pEnmProc->Rotate(180);
+}
+
+// ----------------------------------------------------------------------
+// マップ線を270度回転させて、背景の回転を開始させる
+// ----------------------------------------------------------------------
+void CMapProc::Rotate270() {
 	int i;
 	int x;
 
-	// すべての法線（当たり判定）を計算
+	// 全てのマップ線を270度回転
 	for (i = 0; i < m_pMapArray[m_nMapNo]->m_nMapLnLength; i++) {
+		// 線分の始点と終点の位置を回転させる
 		x = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x;												// 法線の開始地点
 		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y;
 		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y = m_nMapSize[m_nMapNo].y - x;
@@ -941,97 +903,29 @@ void CMapProc::Rotate90(DWORD rotate) {
 		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y;
 		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y = m_nMapSize[m_nMapNo].y - x;
 
-		if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x > 0) {
+		// 法線方向を回転
+		if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x > 0) {		// 右方向を下方向へ
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x--;
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y--;
 		}
-		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x < 0) {
+		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x < 0) {	// 左方向を上方向へ
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x++;
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y++;
 		}
-		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y > 0) {
+		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y > 0) {	// 下方向を右方向へ
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x++;
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y--;
 		}
-		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y < 0) {
+		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y < 0) {	// 上方向を左方向へ
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x--;
 			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y++;
 		}
 	}
-	m_OneSet = TRUE;
-	m_pGMain->m_Rotate += rotate;
 
-	if (m_pGMain->m_Rotate >= 360) {
-		m_pGMain->m_Rotate -= 360;
-	}
-	m_RotateMap[m_nMapNo] = m_pGMain->m_Rotate;
+	m_OneSet = TRUE;			// 回転終了後に行う処理のフラグを入れる
+	m_pGMain->m_Rotate = 270;	// 目標回転増分をセットする
 
-	
-	Rota = 90;
-	//m_pGMain->m_pEnmProc->Rotate(90);
-}
-
-// 引数：マップチップの回転(通常180)
-void CMapProc::Rotate180(DWORD rotate) {
-	int i;
-	for (i = 0; i < m_pMapArray[m_nMapNo]->m_nMapLnLength; i++) {
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x  = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y = m_nMapSize[m_nMapNo].y - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y = m_nMapSize[m_nMapNo].y - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal *= -1;
-
-	}
-	m_OneSet = TRUE;
-	m_pGMain->m_Rotate += rotate;
-
-	if (m_pGMain->m_Rotate >= 360) {
-		m_pGMain->m_Rotate -= 360;
-	}
-	m_RotateMap[m_nMapNo] = m_pGMain->m_Rotate;
-
-	Rota = 180;
-	//m_pGMain->m_pEnmProc->Rotate(180);
-}
-
-// 引数：マップチップの回転(通常90)
-void CMapProc::Rotate270(DWORD rotate) {
-	int i;
-	int y;
-	for (i = 0; i < m_pMapArray[m_nMapNo]->m_nMapLnLength; i++) {
-		y = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.x = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vStart.y = y;
-		y = m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.x = m_nMapSize[m_nMapNo].x - m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y;
-		m_pMapArray[m_nMapNo]->m_MapLn[i].m_vEnd.y = y;
-
-		if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x > 0) {
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x--;
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y++;
-		}
-		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x < 0) {
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x++;
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y--;
-		}
-		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y > 0) {
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x--;
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y--;
-		}
-		else if (m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y < 0) {
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.x++;
-			m_pMapArray[m_nMapNo]->m_MapLn[i].m_vNormal.y++;
-		}
-	}
-	m_OneSet = TRUE;
-	m_pGMain->m_Rotate += rotate;
-
-	if (m_pGMain->m_Rotate >= 360) {
-		m_pGMain->m_Rotate -= 360;
-	}
-	m_RotateMap[m_nMapNo] = m_pGMain->m_Rotate;
-
-	Rota = 270;
+	//Rota = 270;
 	//m_pGMain->m_pEnmProc->Rotate(270);
 }
 

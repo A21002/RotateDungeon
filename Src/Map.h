@@ -139,15 +139,15 @@ public:
 				VECTOR2 mapLine[], int mapLineLen, CEvtMap EvtMap[], int EvtMapLen);
 	void MoveMap();
 	void BackMap();
-	void SetMap(int, VECTOR2);
+	void SetMap(int);
 	void Update();
 	void Update2();
 	void DrawBack();
 	void DrawFore();
 	void DrawMapLine();
-	void Rotate90(DWORD);
-	void Rotate180(DWORD);
-	void Rotate270(DWORD);
+	void Rotate90();
+	void Rotate180();
+	void Rotate270();
 	BOOL isCollisionMoveMap(CBaseObj* obj, CMapLine* &pHitmapline);
 	BOOL CheckMapcross(CMapLine map, CBaseObj* obj, VECTOR2 &hitpos);
 	BOOL CheckLinecross(VECTOR2 a1, VECTOR2 a2, VECTOR2 b1, VECTOR2 b2, VECTOR2 &hitpos);
@@ -169,7 +169,7 @@ public:
 	// マップサイズ配列
 	VECTOR2 m_nMapSize[10];
 	// 法線の回転状態
-	DWORD m_RotateMap[10];
+	DWORD m_fRotate;
 
 	BOOL m_OneSet;
 	int  Rota;

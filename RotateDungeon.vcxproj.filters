@@ -86,6 +86,18 @@
     <ClInclude Include="Src\EnemyMole.h">
       <Filter>ソース ファイル\01_ゲームメイン</Filter>
     </ClInclude>
+    <ClInclude Include="Src\EffectBom.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Item.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WeaponShot.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\WeaponRock.h">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Src\Sprite2D_PS.hlsl">
@@ -166,6 +178,18 @@
       <Filter>ソース ファイル\01_ゲームメイン</Filter>
     </ClCompile>
     <ClCompile Include="Src\EnemyMole.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\EffectBom.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Item.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WeaponShot.cpp">
+      <Filter>ソース ファイル\01_ゲームメイン</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\WeaponRock.cpp">
       <Filter>ソース ファイル\01_ゲームメイン</Filter>
     </ClCompile>
   </ItemGroup>

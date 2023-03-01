@@ -21,14 +21,6 @@
 
 #define  ENM_SLIME_MAX  20
 
-#define  ENM_SLIME_WIDTH 72
-#define  ENM_SLIME_HEIGHT 48
-#define  ENM_SLIME_HP 200
-#define  ENM_SLIME_ATK 300
-#define  ENM_SLIME_JUMP_ANIM_START 2
-#define  ENM_SLIME_JUMP_ANIM_FIN 4
-
-
 //======================================================================
 // スライムの敵　オブジェクトクラス
 //======================================================================
@@ -66,4 +58,22 @@ public:
 	CEnmSlimeProc(CGameMain* pGMain);
 	~CEnmSlimeProc() { ; }
 
+};
+
+class SlimeConstruct {
+public:
+	static const int HP = 200;
+	static const int ATK = 300;
+	static const int SPEED = 1;
+
+	static const int IMAGE_WIDTH = 72;
+	static const int IMAGE_HEIGHT = 48;
+
+	static const int ANIM_NUM = 7;
+
+	static const int JUMP_FLAME_START = 2;
+	static const int JUMP_FLAME_FIN = 4;
+
+	static const int FLASHTIME_DEAD = 3;
+	static const int FLASHTIME_DAMAGE = 1;
 };

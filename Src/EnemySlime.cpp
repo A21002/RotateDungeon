@@ -99,12 +99,13 @@ void CEnmSlimeProc::RotateCenter(DWORD flag) {
 //------------------------------------------------------------------------
 CEnmSlimeObj::CEnmSlimeObj(CGameMain* pGMain) : CBaseObj(pGMain)
 {
-	m_pSprite = new CSprite(m_pGMain->m_pImageEnemy, 0, 0, ENM_SLIME_WIDTH, ENM_SLIME_HEIGHT);
+	m_pSprite = new CSprite(m_pGMain->m_pImageEnemy, 0, 0, 
+		SlimeConstruct::IMAGE_WIDTH, SlimeConstruct::IMAGE_HEIGHT);
 	m_pHpBarObj = NULL;
 	m_vPos = VECTOR2(0, 0);
-	m_nHp = m_nMaxHp = ENM_SLIME_HP;
-	m_nAtc = ENM_SLIME_ATK;
-	m_nAnimNum = 7;
+	m_nHp = m_nMaxHp = SlimeConstruct::HP;
+	m_nAtc = SlimeConstruct::ATK;
+	m_nAnimNum = SlimeConstruct::ANIM_NUM;
 }
 
 // ---------------------------------------------------------------------------
@@ -163,7 +164,6 @@ BOOL	CEnmSlimeObj::Start(VECTOR2 vPos)
 void	CEnmSlimeObj::Update()
 {
 	CMapLine* pHitmapline = NULL;
-	float fSpeed = 1;
 	BOOL bRet;
 
 	if (m_pGMain->m_moveFlag) {
@@ -192,27 +192,28 @@ void	CEnmSlimeObj::Update()
 					// 自由移動の処理
 					if (m_nDirIdx == RIGHT)
 					{
-						m_vPosUp.x = fSpeed;
+						m_vPosUp.x = SlimeConstruct::SPEED;
 					}
 					else {
-						m_vPosUp.x = -fSpeed;
+						m_vPosUp.x = -SlimeConstruct::SPEED;
 					}
 
 					// マップ線との接触判定と適切な位置への移動
 					bRet = m_pGMain->m_pMapProc->isCollisionMoveMap(this, pHitmapline);
-					if ((!bRet && (m_nAnimIdx != 2 && m_nAnimIdx != 3 && m_nAnimIdx != 4)) || (pHitmapline && pHitmapline->m_vNormal.y > -0.99f))
+					if ((!bRet && (m_nAnimIdx < SlimeConstruct::JUMP_FLAME_START && SlimeConstruct::JUMP_FLAME_FIN < m_nAnimIdx)) || 
+						(pHitmapline && pHitmapline->m_vNormal.y > -0.99f))
 					{
 						m_fJumpTime++;
 						// マップ線の端に来たので左右反転
 						if (m_nDirIdx == RIGHT)
 						{
 							m_nDirIdx = LEFT;
-							m_vPosUp.x = -fSpeed;
+							m_vPosUp.x = -SlimeConstruct::SPEED;
 							m_vPosUp.y = round(m_vJumpSpeed.y + GRAVITY * m_fJumpTime);
 						}
 						else {
 							m_nDirIdx = RIGHT;
-							m_vPosUp.x = fSpeed;
+							m_vPosUp.x = SlimeConstruct::SPEED;
 							m_vPosUp.y = round(m_vJumpSpeed.y + GRAVITY * m_fJumpTime);
 						}
 					}
@@ -221,10 +222,10 @@ void	CEnmSlimeObj::Update()
 					}
 
 					// ジャンプ処理
-					if (m_nAnimIdx == ENM_SLIME_JUMP_ANIM_START) {
+					if (m_nAnimIdx == SlimeConstruct::JUMP_FLAME_START) {
 						m_vPosUp.y = -1;
 					}
-					else if (m_nAnimIdx == ENM_SLIME_JUMP_ANIM_FIN) {
+					else if (m_nAnimIdx == SlimeConstruct::JUMP_FLAME_FIN) {
 						m_vPosUp.y = 1;
 					}
 					break;
@@ -242,12 +243,12 @@ void	CEnmSlimeObj::Update()
 				if (m_nHp <= 0) {
 					m_dwStatus = DEAD;
 					m_pHpBarObj->m_bActive = FALSE;
-					m_nCnt1 = 180;
+					m_nCnt1 = SlimeConstruct::FLASHTIME_DEAD * 60;
 				}
 				else {
 					m_dwStatus = FLASH;
 					m_pHpBarObj->m_dwStatus = FLASH;
-					m_nCnt1 = 60;
+					m_nCnt1 = SlimeConstruct::FLASHTIME_DAMAGE * 60;
 				}
 				m_pGMain->m_pSeHit->Play();
 				break;
@@ -258,7 +259,8 @@ void	CEnmSlimeObj::Update()
 				{
 					m_bActive = FALSE;
 					m_pHpBarObj->m_bActive = FALSE;
-					if (0 == Random(0, 2)) {
+					// 回復パーティクルの出現
+					for (int i = 0; i < 10; i++) {
 						m_pGMain->m_pEffectProc->m_pItemProc->Start(m_vPos, ITEMRECOVER);
 					}
 				}
@@ -287,8 +289,8 @@ void CEnmSlimeObj::RotatePos(DWORD rotate) {
 	DWORD x = m_vPos.x;
 	switch (rotate) {
 	case 90:
-		m_vPos.x = m_vPos.y;
-		m_vPos.y = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].y - x;
+		m_vPos.x = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].x - m_vPos.y - m_pSprite->GetSrcHeight();
+		m_vPos.y = x;
 		break;
 
 	case 180:
@@ -297,8 +299,9 @@ void CEnmSlimeObj::RotatePos(DWORD rotate) {
 		break;
 
 	case 270:
-		m_vPos.x = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].x - m_vPos.y - m_pSprite->GetSrcHeight();
-		m_vPos.y = x;
+		m_vPos.x = m_vPos.y;
+		m_vPos.y = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].y - x;
+		break;
 	}
 	m_fRotate = 0;
 }

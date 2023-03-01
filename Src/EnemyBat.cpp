@@ -101,14 +101,15 @@ void CEnmBatProc::RotateCenter(DWORD flag) {
 //------------------------------------------------------------------------
 CEnmBatObj::CEnmBatObj(CGameMain* pGMain) : CBaseObj(pGMain)
 {
-	m_pSprite = new CSprite(m_pGMain->m_pImageEnemy, 0, 96, ENM_BAT_WIDTH, ENM_BAT_HEIGHT);
+	m_pSprite = new CSprite(m_pGMain->m_pImageEnemy, 0, 96, 
+		BatConstruct::IMAGE_WIDTH, BatConstruct::IMAGE_HEIGHT);
 	m_pHpBarObj = NULL;
 	m_nAnimNum = 2;
 	m_vPos = VECTOR2(0, 0);
-	m_nHp = m_nMaxHp = ENM_BAT_HP;
-	m_nAtc = ENM_BAT_ATK;
-
+	m_nHp = m_nMaxHp = BatConstruct::HP;
+	m_nAtc = BatConstruct::ATK;
 }
+
 // ---------------------------------------------------------------------------
 // コウモリの敵オブジェクトのデストラクタ
 // ---------------------------------------------------------------------------
@@ -163,7 +164,6 @@ BOOL	CEnmBatObj::Start(VECTOR2 vPos)
 void	CEnmBatObj::Update()
 {
 	CMapLine* pHitmapline = NULL;
-	float fSpeed = 1;
 	BOOL bRet;
 
 	if (m_pGMain->m_moveFlag) {
@@ -192,12 +192,12 @@ void	CEnmBatObj::Update()
 					// 自由移動の処理
 					if (m_nDirIdx == RIGHT)
 					{
-						m_vPosUp.x = fSpeed;
-						moveNum += fSpeed;
+						m_vPosUp.x = BatConstruct::SPEED;
+						moveNum += BatConstruct::SPEED;
 					}
 					else {
-						m_vPosUp.x = -fSpeed;
-						moveNum += -fSpeed;
+						m_vPosUp.x = -BatConstruct::SPEED;
+						moveNum += -BatConstruct::SPEED;
 					}
 
 					// マップ線との接触判定と適切な位置への移動
@@ -208,12 +208,12 @@ void	CEnmBatObj::Update()
 						if (m_nDirIdx == RIGHT)
 						{
 							m_nDirIdx = LEFT;
-							m_vPosUp.x = -fSpeed;
+							m_vPosUp.x = -BatConstruct::SPEED;
 							m_vPosUp.y = 0;
 						}
 						else {
 							m_nDirIdx = RIGHT;
-							m_vPosUp.x = fSpeed;
+							m_vPosUp.x = BatConstruct::SPEED;
 							m_vPosUp.y = 0;
 						}
 					}
@@ -232,12 +232,12 @@ void	CEnmBatObj::Update()
 				if (m_nHp <= 0) {
 					m_dwStatus = DEAD;
 					m_pHpBarObj->m_bActive = FALSE;
-					m_nCnt1 = 180;
+					m_nCnt1 = BatConstruct::FLASHTIME_DEAD * 60;
 				}
 				else {
 					m_dwStatus = FLASH;
 					m_pHpBarObj->m_dwStatus = FLASH;
-					m_nCnt1 = 60;
+					m_nCnt1 = BatConstruct::FLASHTIME_DAMAGE * 60;
 				}
 				m_pGMain->m_pSeHit->Play();
 				break;
@@ -249,7 +249,8 @@ void	CEnmBatObj::Update()
 					m_bActive = FALSE;
 					m_pHpBarObj->m_bActive = FALSE;
 
-					if (0 == Random(0, 2)) {
+					// 回復パーティクルの出現
+					for (int i = 0; i < 10; i++) {
 						m_pGMain->m_pEffectProc->m_pItemProc->Start(m_vPos, ITEMRECOVER);
 					}
 				}
@@ -276,8 +277,8 @@ void CEnmBatObj::RotatePos(DWORD rotate) {
 	DWORD x = m_vPos.x;
 	switch (rotate) {
 	case 90:
-		m_vPos.x = m_vPos.y;
-		m_vPos.y = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].y - x;
+		m_vPos.x = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].x - m_vPos.y - m_pSprite->GetSrcHeight();
+		m_vPos.y = x;
 		break;
 
 	case 180:
@@ -286,8 +287,9 @@ void CEnmBatObj::RotatePos(DWORD rotate) {
 		break;
 
 	case 270:
-		m_vPos.x = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].x - m_vPos.y - m_pSprite->GetSrcHeight();
-		m_vPos.y = x;
+		m_vPos.x = m_vPos.y;
+		m_vPos.y = m_pGMain->m_pMapProc->m_nMapSize[m_pGMain->m_pMapProc->m_nMapNo].y - x;
+		break;
 	}
 	m_fRotate = 0;
 }

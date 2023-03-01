@@ -157,11 +157,13 @@
     <ClInclude Include="Src\DInput.h" />
     <ClInclude Include="Src\Direct3D.h" />
     <ClInclude Include="Src\Effect.h" />
+    <ClInclude Include="Src\EffectBom.h" />
     <ClInclude Include="Src\Enemy.h" />
     <ClInclude Include="Src\EnemyBat.h" />
     <ClInclude Include="Src\EnemyMole.h" />
     <ClInclude Include="Src\EnemySlime.h" />
     <ClInclude Include="Src\GameMain.h" />
+    <ClInclude Include="Src\Item.h" />
     <ClInclude Include="Src\Main.h" />
     <ClInclude Include="Src\Map.h" />
     <ClInclude Include="Src\MyMath.h" />
@@ -171,6 +173,8 @@
     <ClInclude Include="Src\Sprite.h" />
     <ClInclude Include="Src\Title.h" />
     <ClInclude Include="Src\Weapon.h" />
+    <ClInclude Include="Src\WeaponRock.h" />
+    <ClInclude Include="Src\WeaponShot.h" />
     <ClInclude Include="Src\XAudio.h" />
   </ItemGroup>
   <ItemGroup>
@@ -206,11 +210,13 @@
     <ClCompile Include="Src\DInput.cpp" />
     <ClCompile Include="Src\Direct3D.cpp" />
     <ClCompile Include="Src\Effect.cpp" />
+    <ClCompile Include="Src\EffectBom.cpp" />
     <ClCompile Include="Src\Enemy.cpp" />
     <ClCompile Include="Src\EnemyBat.cpp" />
     <ClCompile Include="Src\EnemyMole.cpp" />
     <ClCompile Include="Src\EnemySlime.cpp" />
     <ClCompile Include="Src\GameMain.cpp" />
+    <ClCompile Include="Src\Item.cpp" />
     <ClCompile Include="Src\Main.cpp" />
     <ClCompile Include="Src\Map.cpp" />
     <ClCompile Include="Src\MyMath.cpp" />
@@ -219,6 +225,8 @@
     <ClCompile Include="Src\Sprite.cpp" />
     <ClCompile Include="Src\Title.cpp" />
     <ClCompile Include="Src\Weapon.cpp" />
+    <ClCompile Include="Src\WeaponRock.cpp" />
+    <ClCompile Include="Src\WeaponShot.cpp" />
     <ClCompile Include="Src\XAudio.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

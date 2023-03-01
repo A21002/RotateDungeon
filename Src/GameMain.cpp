@@ -224,11 +224,10 @@ void CGameMain::GameMain()
 
 	// プロシージャの更新
 	m_pMapProc->Update();		// マッププロシージャの更新
+	m_pEffectProc->UpdateAll();	// 映像効果プロシージャの更新
 	m_pPcProc->UpdateAll();		// ＰＣプロシージャの更新
 	m_pEnmProc->UpdateAll();	// 敵プロシージャの更新
 	m_pWeaponProc->UpdateAll();	// 武器プロシージャの更新
-	m_pEffectProc->UpdateAll();	// 映像効果プロシージャの更新
-
 	m_pMapProc->Update2();		// マッププロシージャの更新2
 	m_pForeProc->Update();		// 前景プロシージャの更新
 
