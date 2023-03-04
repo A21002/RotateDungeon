@@ -1,17 +1,12 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //      オープニングタイトル・ゲームクリヤー・ゲームオーバーの処理
 //																Title.cpp
 //=============================================================================
 #include "Title.h"
 #include "Playchar.h"
 
-//============================================================================
-//
+// ---------------------------------------------------------------------------
 // タイトルプロシージャのコンストラクタ
-//
 // ---------------------------------------------------------------------------
 CTitleProc::CTitleProc(CGameMain* pGMain) : CBaseProc(pGMain)
 {
@@ -22,40 +17,27 @@ CTitleProc::CTitleProc(CGameMain* pGMain) : CBaseProc(pGMain)
 	m_pImageOver = new CSpriteImage(m_pGMain->m_pShader, _T("Data/Image/over.png")); // イメージのロード
 	m_pSprite = new CSprite(m_pGMain->m_pShader ); // スプライトの生成
 
-	
 	m_dwCntTime = 0;
 }
+
 // ---------------------------------------------------------------------------
-//
 // タイトルタイトルプロシージャのデストラクタ
-//
 // ---------------------------------------------------------------------------
 CTitleProc::~CTitleProc()
 {
-
 	SAFE_DELETE(m_pImageTitle);
 	SAFE_DELETE(m_pImageClear);
 	SAFE_DELETE(m_pImageOver);
 	SAFE_DELETE(m_pSprite);
-
 }
+
 //------------------------------------------------------------------------
-//
 //	タイトルの表示	
-//
 //------------------------------------------------------------------------
 void CTitleProc::Title()
 {
-	// フルスクリーンにする(なぜか1度だけだと戻ってしまうので、再度フルスクリーンにする)
-	//m_pGMain->ChangeScreenMode(1);
-
 	// 表示
 	m_pSprite->Draw(m_pImageTitle, 0, 0, 0, 0, m_pImageTitle->m_dwImageWidth, m_pImageTitle->m_dwImageHeight, WINDOW_WIDTH, WINDOW_HEIGHT);
-	//m_pGMain->m_pFont->Draw(133, 133, _T("横スクロールアクションゲーム"), 90, RGB(0, 0, 0), 1.0f, _T("HGP創英角ﾎﾟｯﾌﾟ体"));
-	//m_pGMain->m_pFont->Draw(130, 130, _T("横スクロールアクションゲーム"), 90, RGB(0, 0, 255), 1.0f, _T("HGP創英角ﾎﾟｯﾌﾟ体"));
-
-	// フォント名　"ＤＦ勘亭流"，"ＭＳ Ｐゴシック"，"ＭＳ ゴシック"，"HGP創英角ﾎﾟｯﾌﾟ体"，"HGP創英角ｺﾞｼｯｸUB"
-	//m_pGMain->m_pFont->Draw(WINDOW_WIDTH - 250, 270, _T("DirectX11対応"), 30, RGB(255, 0, 0), 1.0f, _T("HGP創英角ﾎﾟｯﾌﾟ体"));
 
 	m_dwCntTime++;
 	if (m_dwCntTime % 10 > 5)
@@ -72,18 +54,14 @@ void CTitleProc::Title()
 		m_pGMain->m_StartTime = clock();
 
 		m_dwCntTime = 0;
-
 	}
-
 }
+
 //------------------------------------------------------------------------
-//
 //	ゲームクリヤーの表示	
-//
 //------------------------------------------------------------------------
 void CTitleProc::GameClear()
 {
-
 	// 表示
 	m_pSprite->Draw(m_pImageClear, 0, 0, 0, 0, m_pImageTitle->m_dwImageWidth, m_pImageTitle->m_dwImageHeight, WINDOW_WIDTH, WINDOW_HEIGHT);
 	m_pGMain->m_pFont->Draw(353, 83, _T("ゲームクリヤー"), 90, RGB(0, 0, 0), 1.0f, _T("HGP創英角ﾎﾟｯﾌﾟ体"));
@@ -102,14 +80,11 @@ void CTitleProc::GameClear()
 		m_pGMain->m_dwGameStatus = GAMEEND;
 
 		m_dwCntTime = 0;
-
 	}
-
 }
+
 //------------------------------------------------------------------------
-//
 //	ゲームオーバーの表示	
-//
 //------------------------------------------------------------------------
 void CTitleProc::GameOver()
 {
@@ -133,7 +108,5 @@ void CTitleProc::GameOver()
 		m_pGMain->m_dwGameStatus = GAMEEND;
 
 		m_dwCntTime = 0;
-
 	}
-
 }

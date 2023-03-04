@@ -16,7 +16,6 @@ CEffectBomProc::CEffectBomProc(CGameMain* pGMain) : CBaseProc(pGMain)
 	{
 		m_pObjArray.push_back(new CEffectBomObj(m_pGMain));	// m_pObjArrayに映像効果・爆発オブジェクトを生成する
 	}
-
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +55,6 @@ CEffectBomObj::CEffectBomObj(CGameMain* pGMain) : CBaseObj(pGMain)
 {
 	m_pSprite = new CSprite(m_pGMain->m_pImageSprite, 144, 480, 64, 64);
 	m_nAnimNum = 7;
-
 }
 
 // ---------------------------------------------------------------------------

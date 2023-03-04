@@ -234,7 +234,7 @@ CItemObj::CItemObj(CGameMain* pGMain) : CBaseObj(pGMain)
 	m_pSprite = new CSprite(m_pGMain->m_pImageItem);
 	m_nAnimNum = 2;
 	m_bIsCheckKeyFlag = TRUE;
-	SignFlag = TRUE;
+	m_bIsSignFlag = TRUE;
 	m_bIsRotateChengeFlag = TRUE;
 }
 
@@ -263,7 +263,7 @@ BOOL	CItemObj::Start(VECTOR2 vPos, DWORD dwNo)
 	m_vPos = vPos;	// 発生位置
 	m_vPosUp = VECTOR2(0, 0);
 	m_bIsCheckKeyFlag = FALSE;
-	SignFlag = FALSE;
+	m_bIsSignFlag = FALSE;
 
 	switch (m_dwStatusSub)
 	{
@@ -361,9 +361,13 @@ void	CItemObj::Update()
 				}
 				break;
 
-			case  ITEMROTATEDOWN180:
 			case  ITEMROTATION180:	// 180度回転
 				m_pGMain->m_pMapProc->Rotate180();
+				break;
+
+			case  ITEMROTATEDOWN180:
+				m_pGMain->m_pMapProc->Rotate180();
+				m_bActive = false;
 				break;
 
 			case  ITEMROTATION90:	// 90度回転
@@ -389,7 +393,7 @@ void	CItemObj::Update()
 			case  ITEMMOVESIGN:
 			case  ITEMSHOTSIGN:
 			case  ITEMJUMPSIGN:
-				if (!SignFlag) {
+				if (!m_bIsSignFlag) {
 					m_nAnimNum = ItemConstruct::SIGN_TURN_ANIM_NUM;
 				}
 				break;
@@ -408,7 +412,7 @@ void	CItemObj::Update()
 		}
 
 		// チュートリアル看板の裏返った後のスプライト位置やアニメーション数
-		if (m_nAnimIdx >= 5 && !SignFlag) {
+		if (m_nAnimIdx >= 5 && !m_bIsSignFlag) {
 			switch (m_dwStatusSub) {
 			case  ITEMMOVESIGN:
 				m_pSprite->SetSrc(0, 570,
@@ -429,7 +433,7 @@ void	CItemObj::Update()
 				break;
 			}
 			m_nAnimIdx = 0;
-			SignFlag = TRUE;
+			m_bIsSignFlag = TRUE;
 		}
 
 		AnimCountup();

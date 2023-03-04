@@ -1,7 +1,4 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //		ゲームメイン処理
 //																GameMain.h
 //=============================================================================
@@ -11,7 +8,6 @@
 #pragma warning(disable : 4005)
 #pragma warning(disable : 4244)
 #pragma warning(disable : 4018)
-
 
 //ヘッダーファイルのインクルード
 #include <stdio.h>
@@ -37,35 +33,17 @@
 #define  GAMEEND			0x00000020
 
 #define  NORMAL				0x00000001
-#define  STANBY				0x00000002
-#define  CATCH				0x00000004
-#define  ATTACK				0x00000008
 #define  DAMAGE				0x00000010
 #define  DEAD				0x00000020
 #define  FLASH				0x00000040
 #define  WALK				0x00000080
 #define  JUMP				0x00000100
-#define  RAND				0x00000200
 #define  STOP				0x00000400
 #define  SMOKE              0x00000800
 #define  APPEAR             0x00001000
 #define  IDLE               0x00002000
 #define  SHOT               0x00004000
 #define  DIVE               0x00008000
-#define  JUMP               0x00010000
-
-// ステータスサブ
-#define  ATTACKNONE			0x00000001
-#define  ATTACKMOVE			0x00000002
-#define  ATTACKLASER		0x00000004
-#define  ATTACKCANNON		0x00000008
-#define  ATTACKBOM			0x00000010
-#define  ATTACKEARTH		0x00000020
-
-// オブジェクト区分
-#define  PC					0x00000001
-#define  NPC				0x00000002
-#define  ENM				0x00000004
 
 // 方向（DirIdx）
 #define  UP					3
@@ -73,7 +51,7 @@
 #define  DOWN				2
 #define  LEFT				0
 
-#define  GRAVITY  1
+#define  GRAVITY  0.5
 
 class CMain;
 class CShader;
@@ -138,8 +116,8 @@ public:
 	CXAudioSource*  m_pKey;
 
 	// スプライト
-	CSpriteImage*   m_pImageChar;       // -- 2020.1.8
-	CSpriteImage*   m_pImageSprite;     // -- 2020.1.8
+	CSpriteImage*   m_pImageChar;      
+	CSpriteImage*   m_pImageSprite;  
 	CSpriteImage*   m_pImageWeapon;
 	CSpriteImage*   m_pImageEnemy;
 	CSpriteImage*   m_pImageBoss;
@@ -155,6 +133,5 @@ public:
 	void    GameMain();
 	void    Quit();
 
-	HRESULT ChangeScreenMode(int nMode=-1);    // -- 2020.1.15
-
+	HRESULT ChangeScreenMode(int nMode=-1); 
 };

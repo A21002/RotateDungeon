@@ -30,12 +30,10 @@
 class CWeaponRockObj : public CBaseObj
 {
 protected:
-	DWORD  m_dwOwner;
-	DWORD  m_hp;
-	VECTOR2 m_top;
+	int m_nHp;
 
 public:
-	BOOL Start(VECTOR2, CBaseObj* pObj, DWORD dwOwner) override;
+	BOOL Start(VECTOR2, CBaseObj* pObj) override;
 	void Update() override;
 
 	void RotatePos(DWORD) override;
@@ -54,7 +52,7 @@ public:
 class CWeaponRockProc : public CBaseProc
 {
 public:
-	BOOL Start(VECTOR2, CBaseObj* pObj, DWORD dwOwner);
+	BOOL Start(VECTOR2, CBaseObj* pObj);
 
 	void   Rotate(DWORD) override;
 	void   RotateCenter(DWORD) override;

@@ -30,16 +30,14 @@
 class CWeaponShotObj : public CBaseObj
 {
 protected:
-	DWORD  m_dwOwner;
 
 public:
-	BOOL Start(VECTOR2, CBaseObj* pObj, DWORD dwOwner) override;
+	BOOL Start(VECTOR2, CBaseObj* pObj) override;
 	void Update() override;
 
 	// コンストラクタ
 	CWeaponShotObj(CGameMain* pGMain);
 	~CWeaponShotObj();
-
 };
 
 //======================================================================
@@ -48,9 +46,8 @@ public:
 class CWeaponShotProc : public CBaseProc
 {
 public:
-	BOOL Start(VECTOR2, CBaseObj* pObj, DWORD dwOwner);
+	BOOL Start(VECTOR2, CBaseObj* pObj);
 
 	CWeaponShotProc(CGameMain* pGMain);	// コンストラクタ
 	~CWeaponShotProc() { ; }
-
 };

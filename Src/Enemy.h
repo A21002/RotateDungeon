@@ -40,6 +40,14 @@ public:
 	void  RotateCenter(DWORD);
 	CEnmProc(CGameMain* pGMain);	// コンストラクタ
 	~CEnmProc() { ; }
+};
 
+class HpBarConstruct
+{
+public:
+	static const int IMAGE_WIDTH = 50;
+	static const int IMAGE_HEIGHT = 6;
+
+	static const int DIFF = -20;
 };
 

@@ -180,7 +180,7 @@ void	CPcObj::Update()
 			if (m_nShotWait <= 0)
 			{
 				// ショットの発射
-				m_pGMain->m_pWeaponProc->m_pWeaponShotProc->Start(m_vPos + VECTOR2(16, 16), this, PC);
+				m_pGMain->m_pWeaponProc->m_pWeaponShotProc->Start(m_vPos + VECTOR2(16, 16), this);
 				m_nShotWait = PcConstruct::SHOT_WAIT_SECOND * 60;    // 武器発射のウェイトを掛ける
 			}
 		}

@@ -9,11 +9,7 @@
 #include "Map.h"
 
 //------------------------------------------------------------------------
-//
 //	武器・ショットプロシージャのコンストラクタ	
-//
-//   なお、プロシージャのdeleteはCBaseProcのデストラクタで行うため不要
-//
 //------------------------------------------------------------------------
 CWeaponShotProc::CWeaponShotProc(CGameMain* pGMain) : CBaseProc(pGMain)
 {
@@ -36,7 +32,7 @@ CWeaponShotProc::CWeaponShotProc(CGameMain* pGMain) : CBaseProc(pGMain)
 //
 //   戻り値　　正常に発生 : TRUE    発生しなかった : FALSE
 //-----------------------------------------------------------------------------
-BOOL	CWeaponShotProc::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
+BOOL	CWeaponShotProc::Start(VECTOR2 vPos, CBaseObj* pObj)
 {
 	BOOL bRet = FALSE;
 
@@ -44,7 +40,7 @@ BOOL	CWeaponShotProc::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
 	{
 		if (!m_pObjArray[i]->GetActive())
 		{
-			m_pObjArray[i]->Start(vPos, pObj, dwOwner);	// 武器の発生
+			m_pObjArray[i]->Start(vPos, pObj);	// 武器の発生
 			m_pGMain->m_pSeHit->Play();
 			bRet = TRUE;
 			break;
@@ -52,18 +48,11 @@ BOOL	CWeaponShotProc::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
 	}
 	if (bRet) m_pGMain->m_pSeShot->Play();
 
-	//  (注意)m_nWaitTimeのカウントダウンは、CBaseProcで行っている
-
 	return bRet;
 }
 
-
 //------------------------------------------------------------------------
-//
 //	武器・ショットオブジェクトのコンストラクタ	
-//
-//  引数　なし
-//
 //------------------------------------------------------------------------
 CWeaponShotObj::CWeaponShotObj(CGameMain* pGMain) : CBaseObj(pGMain)
 {
@@ -72,32 +61,25 @@ CWeaponShotObj::CWeaponShotObj(CGameMain* pGMain) : CBaseObj(pGMain)
 
 	m_nAtc = WEAPON_SHOT_ATK;
 }
+
 // ---------------------------------------------------------------------------
-//
 // 武器・ショットオブジェクトのデストラクタ
-//
 // ---------------------------------------------------------------------------
 CWeaponShotObj::~CWeaponShotObj()
 {
 	SAFE_DELETE(m_pSprite);
 }
+
 //-----------------------------------------------------------------------------
 // 武器・ショットオブジェクトの開始
-//
-//   VECTOR2 vPos    発生位置
-//   CBaseObj*   pObj    発射元のオブジェクト
-//   DWORD       dwOwner 発射元のオブジェクト区分
-//
-//   戻り値　　TRUE
 //-----------------------------------------------------------------------------
-BOOL	CWeaponShotObj::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
+BOOL	CWeaponShotObj::Start(VECTOR2 vPos, CBaseObj* pObj)
 {
 	float fSpeed = WEAPON_SHOT_SPEED;	// 弾の速さ
 
 	m_bActive = TRUE;
 	ResetStatus();
 	ResetAnim();
-	m_dwOwner = dwOwner;
 
 	m_vPos = vPos;	// 発生位置
 
@@ -120,15 +102,12 @@ BOOL	CWeaponShotObj::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
 		m_nDirIdx = RIGHT;
 		break;
 	}
-	//m_nDirIdx = m_pGMain->m_pPcProc->GetPcObjPtr()->GetDirIdx();
 
 	return TRUE;
-
 }
+
 //-----------------------------------------------------------------------------
 // 武器・ショットオブジェクトの更新
-//
-//   引数　　　なし
 //-----------------------------------------------------------------------------
 void	CWeaponShotObj::Update()
 {
@@ -139,13 +118,7 @@ void	CWeaponShotObj::Update()
 		switch (m_dwStatus)
 		{
 		case  NORMAL:
-			if (m_dwOwner == PC) // PCが発射した弾
-			{
-				m_pGMain->m_pEnmProc->Hitcheck((CBaseObj*)this);
-			}
-			else { //  敵が発射した弾
-				m_pGMain->m_pPcProc->Hitcheck((CBaseObj*)this);
-			}
+			m_pGMain->m_pEnmProc->Hitcheck((CBaseObj*)this);
 
 			bRet = m_pGMain->m_pMapProc->isCollisionMoveMap(this, pHitmapline);
 			if (m_vPos.x - m_pGMain->m_vScroll.x < 0 || m_vPos.x - m_pGMain->m_vScroll.x > WINDOW_WIDTH ||
@@ -164,6 +137,5 @@ void	CWeaponShotObj::Update()
 
 		AnimCountup();
 		Draw();
-
 	}
 }

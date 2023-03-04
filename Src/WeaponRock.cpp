@@ -9,11 +9,7 @@
 #include "Map.h"
 
 //------------------------------------------------------------------------
-//
 //	岩プロシージャのコンストラクタ	
-//
-//   なお、プロシージャのdeleteはCBaseProcのデストラクタで行うため不要
-//
 //------------------------------------------------------------------------
 CWeaponRockProc::CWeaponRockProc(CGameMain* pGMain) : CBaseProc(pGMain)
 {
@@ -24,19 +20,12 @@ CWeaponRockProc::CWeaponRockProc(CGameMain* pGMain) : CBaseProc(pGMain)
 	}
 
 	m_nWaitTime = m_nMaxwaitTime = 8;
-
 }
 
 //-----------------------------------------------------------------------------
 // 岩プロシージャの開始
-//
-//   VECTOR2 vPos    発生位置
-//   CBaseObj*   pObj    発射元のオブジェクト
-//   DWORD       dwOwner 発射元のオブジェクト区分
-//
-//   戻り値　　正常に発生 : TRUE    発生しなかった : FALSE
 //-----------------------------------------------------------------------------
-BOOL	CWeaponRockProc::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
+BOOL	CWeaponRockProc::Start(VECTOR2 vPos, CBaseObj* pObj)
 {
 	BOOL bRet = FALSE;
 
@@ -44,25 +33,32 @@ BOOL	CWeaponRockProc::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
 	{
 		if (!m_pObjArray[i]->GetActive())
 		{
-			m_pObjArray[i]->Start(vPos, pObj, dwOwner);	// 武器の発生
+			m_pObjArray[i]->Start(vPos, pObj);	// 武器の発生
 			m_pGMain->m_pSeHit->Play();
 			bRet = TRUE;
 			break;
 		}
 	}
 	if (bRet) m_pGMain->m_pSeShot->Play();
-
-	//  (注意)m_nWaitTimeのカウントダウンは、CBaseProcで行っている
-
 	return bRet;
 }
 
 //------------------------------------------------------------------------
-//
+// 全てのオブジェクトを回転後の座標にセットする
+//------------------------------------------------------------------------
+void CWeaponRockProc::Rotate(DWORD rotate) {
+	for (DWORD j = 0; j < m_pObjArray.size(); j++)
+	{
+		if (m_pObjArray[j]->GetActive())
+		{
+			m_pObjArray[j]->RotatePos(rotate);
+			//break;
+		}
+	}
+}
+
+//------------------------------------------------------------------------
 //	岩オブジェクトのコンストラクタ	
-//
-//  引数　なし
-//
 //------------------------------------------------------------------------
 CWeaponRockObj::CWeaponRockObj(CGameMain* pGMain) : CBaseObj(pGMain)
 {
@@ -71,12 +67,11 @@ CWeaponRockObj::CWeaponRockObj(CGameMain* pGMain) : CBaseObj(pGMain)
 
 	m_nAtc = WEAPON_ROCK_ATK_PC;
 	m_nEnmAtc = WEAPON_ROCK_ATK_ENM;
+	m_nHp = 0;
 }
 
 // ---------------------------------------------------------------------------
-//
 // 岩オブジェクトのデストラクタ
-//
 // ---------------------------------------------------------------------------
 CWeaponRockObj::~CWeaponRockObj()
 {
@@ -88,38 +83,33 @@ CWeaponRockObj::~CWeaponRockObj()
 //
 //   VECTOR2 vPos    発生位置
 //   CBaseObj*   pObj    発射元のオブジェクト
-//   DWORD       dwOwner 発射元のオブジェクト区分
 //
 //   戻り値　　TRUE
 //-----------------------------------------------------------------------------
-BOOL	CWeaponRockObj::Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner)
+BOOL	CWeaponRockObj::Start(VECTOR2 vPos, CBaseObj* pObj)
 {
 	//float fSpeed = 8;	// 弾の速さ
 
 	m_bActive = TRUE;
 	ResetStatus();
 	ResetAnim();
-	m_dwOwner = dwOwner;
 
 	m_vPos = vPos;	// 発生位置
 	m_vPosUp = VECTOR2(0, 10);
 	if (Random(0, 9) > 5) {
-		m_hp = 2;
+		m_nHp = 2;
 	}
 	else {
-		m_hp = 1;
+		m_nHp = 1;
 	}
 
 	m_pGMain->m_pFall->Play();
 
 	return TRUE;
-
 }
 
 //-----------------------------------------------------------------------------
 // 岩オブジェクトの更新
-//
-//   引数　　　なし
 //-----------------------------------------------------------------------------
 void	CWeaponRockObj::Update()
 {
@@ -137,14 +127,14 @@ void	CWeaponRockObj::Update()
 					m_dwStatus = STOP;	// マップ線に接触しているときは、ジャンプを歩行に戻す
 					m_vPos += m_vPosUp;
 					m_vPosUp = VECTOR2(0, 0);
-					m_hp--;
+					m_nHp--;
 					m_fJumpTime = 0;
 				}
 			}
 
 
 			// 破壊するか判定
-			if (m_hp <= 0) {
+			if (m_nHp <= 0) {
 				m_dwStatus = DAMAGE;
 			}
 			m_pGMain->m_pEnmProc->Hitcheck((CBaseObj*)this);
@@ -158,7 +148,7 @@ void	CWeaponRockObj::Update()
 
 		case  STOP:
 			m_nAnimNum = 1;
-			if (m_hp <= 0) {
+			if (m_nHp <= 0) {
 				m_dwStatus = DAMAGE;
 			}
 			break;
@@ -168,7 +158,6 @@ void	CWeaponRockObj::Update()
 
 		AnimCountup();
 		Draw();
-
 	}
 }
 
@@ -177,13 +166,12 @@ void CWeaponRockProc::RotateCenter(DWORD flag) {
 	{
 		if (m_pObjArray[j]->GetActive())
 		{
-			if (flag == 1) {
+			if (flag == UP) {
 				m_pObjArray[j]->RotateDrawUp();
 			}
-			else if (flag == 2) {
+			else if (flag == DOWN) {
 				m_pObjArray[j]->RotateDrawDown();
 			}
-			//break;
 		}
 	}
 }
@@ -202,17 +190,10 @@ void CWeaponRockObj::RotateDrawDown() {
 	m_fRotate--;
 }
 
-void CWeaponRockProc::Rotate(DWORD rotate) {
-	for (DWORD j = 0; j < m_pObjArray.size(); j++)
-	{
-		if (m_pObjArray[j]->GetActive())
-		{
-			m_pObjArray[j]->RotatePos(rotate);
-			//break;
-		}
-	}
-}
 
+// ---------------------------------------------------------------------------
+// 回転角に応じて、回転後の座標をセットする
+// ---------------------------------------------------------------------------
 void CWeaponRockObj::RotatePos(DWORD rotate) {
 	DWORD x = m_vPos.x;
 	switch (rotate) {

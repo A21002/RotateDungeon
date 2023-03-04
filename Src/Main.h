@@ -29,7 +29,7 @@
 #define WINDOW_WIDTH   1366   //ウィンドウ幅
 #define WINDOW_HEIGHT  768    //ウィンドウ高さ
 
-#define APP_NAME _T("C2DAct113 基本２Ｄアクションゲーム    ver3.0")
+#define APP_NAME _T("Rotate Dungeon")
 
 class CGameMain;
 

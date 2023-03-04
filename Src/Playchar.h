@@ -67,7 +67,7 @@ public:
 	static const int MAX_HP = 1000;
 	static const int ATC = 10;
 	static const int SPEED_MOVE = 5;
-	static const int SPEED_JUMP = 9;
+	static const int SPEED_JUMP = 5;
 
 	static const int FLASH_SECOND = 1;
 	static const int DEAD_SECOND = 3;

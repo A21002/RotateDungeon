@@ -33,7 +33,6 @@ public:
 	// コンストラクタ
 	CEffectBomObj(CGameMain* pGMain);
 	~CEffectBomObj();
-
 };
 
 //======================================================================
@@ -46,5 +45,4 @@ public:
 
 	CEffectBomProc(CGameMain* pGMain);	// コンストラクタ
 	~CEffectBomProc() { ; }	// デストラクタ
-
 };

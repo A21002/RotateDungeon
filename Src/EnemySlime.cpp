@@ -3,6 +3,7 @@
 //																EnamySlime.cpp
 //=============================================================================
 #include "EnemySlime.h"
+#include "Enemy.h"
 #include "Map.h"
 #include "Effect.h"
 #include "Playchar.h"
@@ -20,7 +21,6 @@ CEnmSlimeProc::CEnmSlimeProc(CGameMain* pGMain) : CBaseProc(pGMain)
 		m_pObjArray.push_back(new CEnmSlimeObj(m_pGMain));  // m_pObjArrayにオブジェクトを生成する
 		((CEnmSlimeObj*)(m_pObjArray[i]))->CreateChildObj();
 	}
-
 }
 
 // ---------------------------------------------------------------------------
@@ -127,8 +127,6 @@ void CEnmSlimeObj::CreateChildObj()
 
 //-----------------------------------------------------------------------------
 // スライムの敵オブジェクトの開始
-//
-//   引数　　　なし
 //-----------------------------------------------------------------------------
 BOOL	CEnmSlimeObj::Start(VECTOR2 vPos)
 {
@@ -148,8 +146,9 @@ BOOL	CEnmSlimeObj::Start(VECTOR2 vPos)
 	m_pHpBarObj->ResetAnim();
 	m_pHpBarObj->m_vPos = m_vPos;
 	m_pHpBarObj->m_vPosUp = VECTOR2(0, 0);
-	m_pHpBarObj->m_vOf = VECTOR2(0, -20);
-	m_pHpBarObj->m_pSprite->SetSrc(144, 144, 50, 6);
+	m_pHpBarObj->m_vOf = VECTOR2(0, HpBarConstruct::DIFF);
+	m_pHpBarObj->m_pSprite->SetSrc(144, 144, 
+		HpBarConstruct::IMAGE_WIDTH, HpBarConstruct::IMAGE_HEIGHT);
 	m_pHpBarObj->m_nAnimNum = 1;
 	m_pHpBarObj->m_nHp = m_nHp;
 
@@ -158,8 +157,6 @@ BOOL	CEnmSlimeObj::Start(VECTOR2 vPos)
 
 //-----------------------------------------------------------------------------
 // スライムの敵オブジェクトの更新
-//
-//   引数　　　なし
 //-----------------------------------------------------------------------------
 void	CEnmSlimeObj::Update()
 {
@@ -174,6 +171,7 @@ void	CEnmSlimeObj::Update()
 			switch (m_dwStatus)
 			{
 			case  FLASH:
+				// ダメージを受けた際の処理
 				m_nCnt1--;
 				if (m_nCnt1 <= 0) {
 					ResetStatus();
@@ -198,35 +196,39 @@ void	CEnmSlimeObj::Update()
 						m_vPosUp.x = -SlimeConstruct::SPEED;
 					}
 
+					// ジャンプ処理
+					if (m_nAnimIdx == SlimeConstruct::JUMP_FLAME)
+					{
+						m_vPosUp.y += -SlimeConstruct::JUMP_POWER;
+						m_vJumpSpeed.y = m_vPosUp.y;
+					}
+
 					// マップ線との接触判定と適切な位置への移動
 					bRet = m_pGMain->m_pMapProc->isCollisionMoveMap(this, pHitmapline);
-					if ((!bRet && (m_nAnimIdx < SlimeConstruct::JUMP_FLAME_START && SlimeConstruct::JUMP_FLAME_FIN < m_nAnimIdx)) || 
-						(pHitmapline && pHitmapline->m_vNormal.y > -0.99f))
+					if (!bRet || (pHitmapline->m_vNormal.y != -1))
 					{
 						m_fJumpTime++;
+						m_vPosUp.y += round(m_vJumpSpeed.y + GRAVITY * m_fJumpTime);
+						//m_vJumpSpeed.y = m_vPosUp.y;
+					}
+					else {
+						m_fJumpTime = 0;
+						m_vJumpSpeed.y = 0;
+					}
+
+					if (pHitmapline && (pHitmapline->m_vNormal.x == -1 || pHitmapline->m_vNormal.x == 1))
+					{
 						// マップ線の端に来たので左右反転
 						if (m_nDirIdx == RIGHT)
 						{
 							m_nDirIdx = LEFT;
-							m_vPosUp.x = -SlimeConstruct::SPEED;
-							m_vPosUp.y = round(m_vJumpSpeed.y + GRAVITY * m_fJumpTime);
+							//m_vPosUp.x = -SlimeConstruct::SPEED;
 						}
 						else {
 							m_nDirIdx = RIGHT;
-							m_vPosUp.x = SlimeConstruct::SPEED;
-							m_vPosUp.y = round(m_vJumpSpeed.y + GRAVITY * m_fJumpTime);
+							//m_vPosUp.x = SlimeConstruct::SPEED;
 						}
-					}
-					else {
-						m_fJumpTime = 0;
-					}
 
-					// ジャンプ処理
-					if (m_nAnimIdx == SlimeConstruct::JUMP_FLAME_START) {
-						m_vPosUp.y = -1;
-					}
-					else if (m_nAnimIdx == SlimeConstruct::JUMP_FLAME_FIN) {
-						m_vPosUp.y = 1;
 					}
 					break;
 				}
@@ -241,6 +243,7 @@ void	CEnmSlimeObj::Update()
 			case  DAMAGE:
 				m_nHp -= m_pOtherObj->GetAtc();
 				if (m_nHp <= 0) {
+					// HPが0になった時
 					m_dwStatus = DEAD;
 					m_pHpBarObj->m_bActive = FALSE;
 					m_nCnt1 = SlimeConstruct::FLASHTIME_DEAD * 60;
@@ -254,6 +257,7 @@ void	CEnmSlimeObj::Update()
 				break;
 
 			case  DEAD:
+				// 倒れた際の最後の処理
 				m_nCnt1--;
 				if (m_nCnt1 <= 0)
 				{
@@ -274,11 +278,12 @@ void	CEnmSlimeObj::Update()
 			m_pHpBarObj->AnimCountup();
 
 		}
+
+		// HPバーの描画
 		FLOAT h = (float)m_nHp / (float)m_nMaxHp;
 		m_pHpBarObj->m_pSprite->SetSrc(144, 144, (DWORD)(50.0 * h), 6);
 		m_pHpBarObj->Draw();
 	}
-
 	Draw();
 }
 

@@ -1,7 +1,4 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //		マップの処理
 //																Map.h
 //=============================================================================
@@ -112,8 +109,6 @@ class  CMapProc
 protected:
 	CGameMain*	m_pGMain;
 
-	
-	
 	// マップ線の描画フラグ
 	BOOL  m_bDrawMapLine;
 
@@ -138,7 +133,6 @@ public:
 				int  mapBakTbl[], int mapBakLen, int  mapForTbl[], int mapForLen, 
 				VECTOR2 mapLine[], int mapLineLen, CEvtMap EvtMap[], int EvtMapLen);
 	void MoveMap();
-	void BackMap();
 	void SetMap(int);
 	void Update();
 	void Update2();
@@ -157,6 +151,7 @@ public:
 	float GetLength(VECTOR2 p1, VECTOR2 p2);
 	float GetCross(VECTOR2 a, VECTOR2 b);
 	float GetDot(VECTOR2 a, VECTOR2 b);
+	int GetRotate();
 
 	BOOL SearchEvt(int nStart, int nEvtID, DWORD dwEvtNo, VECTOR2& vPos, int& nNext);
 

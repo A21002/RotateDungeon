@@ -181,6 +181,8 @@ void	CEnmMoleObj::Update()
 							m_nAnimNum = MoleConstruct::ANIM_NUM_SHOT;
 							m_nAnimIdx = 0;
 							m_nDirIdx = LEFT;
+							m_nFlashIdx = 0;		// フラッシュアニメーションインデックス数
+							m_nFlashFrm = 0;		// フラッシュアニメーションフレームカウント
 
 							// 落とす岩の数を決める
 							m_ShotNum = Random(MoleConstruct::SHOT_NUM_MIN, MoleConstruct::SHOT_NUM_MAX);
@@ -200,6 +202,8 @@ void	CEnmMoleObj::Update()
 							m_dwStatusSub = JUMP;
 							m_nAnimNum = MoleConstruct::ANIM_NUM_JUMP;
 							m_nAnimIdx = 0;
+							m_nFlashIdx = 0;		// フラッシュアニメーションインデックス数
+							m_nFlashFrm = 0;		// フラッシュアニメーションフレームカウント
 
 							if (m_nDirIdx == LEFT) {
 								// IDLE時、左を向いていれば右からスタート
@@ -322,7 +326,7 @@ void	CEnmMoleObj::Update()
 							m_pGMain->m_pEffectProc->m_pItemProc->Start(m_vPos + VECTOR2(0, 100), ITEMROTATEDOWN180);
 						}
 						else {
-							m_pGMain->m_pWeaponProc->m_pWeaponRockProc->Start(m_vPos + VECTOR2(0, 100), this, ENM);
+							m_pGMain->m_pWeaponProc->m_pWeaponRockProc->Start(m_vPos + VECTOR2(0, 100), this);
 						}
 					}
 				}
@@ -350,6 +354,7 @@ void	CEnmMoleObj::Update()
 					m_nHp -= m_pOtherObj->GetAtc();
 				}
 				if (m_nHp <= 0) {
+					// HPが0になった時
 					m_dwStatus = DEAD;
 					m_nCnt1 = 180;
 				}
@@ -361,6 +366,7 @@ void	CEnmMoleObj::Update()
 				break;
 
 			case  DEAD:
+				// 倒されたときの処理
 				m_nCnt1--;
 				if (m_nCnt1 <= 0)
 				{

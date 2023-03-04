@@ -3,6 +3,7 @@
 //																EnamySlime.cpp
 //=============================================================================
 #include "EnemyBat.h"
+#include "Enemy.h"
 #include "Map.h"
 #include "Effect.h"
 #include "Playchar.h"
@@ -64,7 +65,6 @@ void CEnmBatProc::Rotate(DWORD rotate) {
 		if (m_pObjArray[j]->GetActive())
 		{
 			m_pObjArray[j]->RotatePos(rotate);
-			//break;
 		}
 	}
 }
@@ -88,7 +88,6 @@ void CEnmBatProc::RotateCenter(DWORD flag) {
 			else if (flag == DOWN) {
 				m_pObjArray[j]->RotateDrawDown();
 			}
-			//break;
 		}
 	}
 }
@@ -104,7 +103,7 @@ CEnmBatObj::CEnmBatObj(CGameMain* pGMain) : CBaseObj(pGMain)
 	m_pSprite = new CSprite(m_pGMain->m_pImageEnemy, 0, 96, 
 		BatConstruct::IMAGE_WIDTH, BatConstruct::IMAGE_HEIGHT);
 	m_pHpBarObj = NULL;
-	m_nAnimNum = 2;
+	m_nAnimNum = BatConstruct::ANIM_NUM;
 	m_vPos = VECTOR2(0, 0);
 	m_nHp = m_nMaxHp = BatConstruct::HP;
 	m_nAtc = BatConstruct::ATK;
@@ -150,8 +149,9 @@ BOOL	CEnmBatObj::Start(VECTOR2 vPos)
 	m_pHpBarObj->ResetAnim();
 	m_pHpBarObj->m_vPos = m_vPos;
 	m_pHpBarObj->m_vPosUp = VECTOR2(0, 0);
-	m_pHpBarObj->m_vOf = VECTOR2(0, -20);
-	m_pHpBarObj->m_pSprite->SetSrc(144, 144, 50, 6);
+	m_pHpBarObj->m_vOf = VECTOR2(0, HpBarConstruct::DIFF);
+	m_pHpBarObj->m_pSprite->SetSrc(144, 144, 
+		HpBarConstruct::IMAGE_WIDTH, HpBarConstruct::IMAGE_HEIGHT);
 	m_pHpBarObj->m_nAnimNum = 1;
 	m_pHpBarObj->m_nHp = m_nHp;
 
@@ -174,6 +174,7 @@ void	CEnmBatObj::Update()
 			switch (m_dwStatus)
 			{
 			case  FLASH:
+				// ダメージを受けた際の無敵時間
 				m_nCnt1--;
 				if (m_nCnt1 <= 0) {
 					ResetStatus();
@@ -230,6 +231,7 @@ void	CEnmBatObj::Update()
 			case  DAMAGE:
 				m_nHp -= m_pOtherObj->GetAtc();
 				if (m_nHp <= 0) {
+					// HPが0になった時
 					m_dwStatus = DEAD;
 					m_pHpBarObj->m_bActive = FALSE;
 					m_nCnt1 = BatConstruct::FLASHTIME_DEAD * 60;
@@ -243,6 +245,7 @@ void	CEnmBatObj::Update()
 				break;
 
 			case  DEAD:
+				// 倒れた際の処理
 				m_nCnt1--;
 				if (m_nCnt1 <= 0)
 				{
@@ -261,8 +264,10 @@ void	CEnmBatObj::Update()
 			}
 
 			AnimCountup();
+
+			// HPバーの表示
 			FLOAT h = (float)m_nHp / (float)m_nMaxHp;
-			m_pHpBarObj->m_pSprite->SetSrc(144, 144, (DWORD)(50.0 * h), 6);
+			m_pHpBarObj->m_pSprite->SetSrc(144, 144, (DWORD)(HpBarConstruct::IMAGE_WIDTH * h), HpBarConstruct::IMAGE_HEIGHT);
 			m_pHpBarObj->Draw();
 		}
 		Draw();

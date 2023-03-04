@@ -1,7 +1,4 @@
 //=============================================================================
-//		２Ｄアクションゲームプログラム
-//		Ｃ２ＤＡｃｔ１１３　　　　　　           ver 3.0        2021.1.11
-//
 //		基本プロシージャ・基本オブジェクトクラス処理
 //																BaseProc.h
 //=============================================================================
@@ -12,10 +9,6 @@ class CSprite;
 class CGameMain;
 // --------------------------------------------------------------------------------------------------
 // 基本オブジェクトクラス
-// 
-// ＊　オブジェクトとは、ゲーム中に登場する一つ一つの物体、例えばＰＣや、武器の１つなどを指す。
-// 　　なお、オブジェクトは、各プロシージャのメンバー配列として宣言する
-// 
 // --------------------------------------------------------------------------------------------------
 class CBaseObj
 {
@@ -51,7 +44,7 @@ protected:
 	int				m_nMp;				// 魔力
 	int				m_nAtc;				// 攻撃力
 	int             m_nEnmAtc;
-	int             speed;
+	int             m_nSpeed;
 
 public:
 	virtual			void Update() { ; }
@@ -60,7 +53,7 @@ public:
 	virtual			BOOL Start() { return TRUE; }
 	virtual			BOOL Start(VECTOR2 vPos) { return TRUE; }
 	virtual			BOOL Start(VECTOR2 vPos, DWORD dwOwner) { return TRUE; }
-	virtual			BOOL Start(VECTOR2 vPos, CBaseObj* pObj, DWORD dwOwner) { return TRUE; }
+	virtual			BOOL Start(VECTOR2 vPos, CBaseObj* pObj) { return TRUE; }
 
 	virtual			void  ResetStatus() final;
 	virtual			void  ResetAnim() final;
@@ -74,7 +67,7 @@ public:
 	virtual			VECTOR2 GetCenterPos();
 
 	// 目的地へ向かう関数
-	virtual			BOOL TargetMove( float speed);
+	virtual			BOOL TargetMove( float m_nSpeed);
 
 	// アクセス関数
 	BOOL	GetActive() { return m_bActive; }
@@ -115,10 +108,6 @@ public:
 
 // --------------------------------------------------------------------------------------------------
 // 基本プロシージャクラス
-//
-//   ＊　プロシージャとは、「複数の処理を一つにまとめたもの」という意味
-//       複数のオブジェクトや下位プロシージャをコントロールするクラスのこと
-//
 // --------------------------------------------------------------------------------------------------
 class  CBaseProc
 {

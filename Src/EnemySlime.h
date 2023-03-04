@@ -65,14 +65,13 @@ public:
 	static const int HP = 200;
 	static const int ATK = 300;
 	static const int SPEED = 1;
+	static const int JUMP_POWER = 4;
+	static const int JUMP_FLAME = 2;
 
 	static const int IMAGE_WIDTH = 72;
 	static const int IMAGE_HEIGHT = 48;
 
 	static const int ANIM_NUM = 7;
-
-	static const int JUMP_FLAME_START = 2;
-	static const int JUMP_FLAME_FIN = 4;
 
 	static const int FLASHTIME_DEAD = 3;
 	static const int FLASHTIME_DAMAGE = 1;

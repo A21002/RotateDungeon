@@ -51,7 +51,7 @@ public:
 
 	DWORD m_bIsRotateChengeFlag;		// 回転後、角度に合わせた絵に変更するか　0：なし	1:縦	2：横
 	BOOL  m_bIsCheckKeyFlag;			// テキストダイアログ後、鍵があるかのチェックを行うためのフラグ
-	BOOL  SignFlag;						// 看板に触れ、チュートリアルを表示するフラグ
+	BOOL  m_bIsSignFlag;						// 看板に触れ、チュートリアルを表示するフラグ
 
 	// コンストラクタ
 	CItemObj(CGameMain* pGMain);
@@ -81,7 +81,7 @@ public:
 	static const int RECOVER_IMAGE_HEIGHT = 7;
 	static const int RECOVER_DIFF = 20;
 	static const int RECOVER_NUM = 10;
-	static const int RECOVER_PARTICLE_SPEED = 3;
+	static const int RECOVER_PARTICLE_SPEED = 7;
 
 	static const int DOOR_IMAGE_WIDTH = 64;
 	static const int DOOR_IMAGE_HEIGHT = 96;

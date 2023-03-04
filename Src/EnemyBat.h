@@ -46,7 +46,6 @@ public:
 	// コンストラクタ
 	CEnmBatObj(CGameMain* pGMain);
 	~CEnmBatObj();
-
 };
 
 //======================================================================
@@ -65,7 +64,6 @@ public:
 	// コンストラクタ
 	CEnmBatProc(CGameMain* pGMain);
 	~CEnmBatProc() { ; }
-
 };
 
 class BatConstruct
@@ -77,6 +75,7 @@ public:
 
 	static const int IMAGE_WIDTH = 60;
 	static const int IMAGE_HEIGHT = 51;
+	static const int ANIM_NUM = 2;
 
 	static const int FLASHTIME_DEAD = 3;
 	static const int FLASHTIME_DAMAGE = 1;
